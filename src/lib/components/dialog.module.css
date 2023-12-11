@@ -1,0 +1,22 @@
+.overlay {
+  animation: overlay-animation-keyframes 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.content {
+  animation: content-animation-keyframes 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+@keyframes overlay-animation-keyframes {
+  from {
+    opacity: 0.24;
+  }
+  to {
+    opacity: 1;
+  }
+}
+@keyframes content-animation-keyframes {
+  from {
+    transform: scale(0.95);
+  }
+  to {
+    transform: scale(1);
+  }
+}

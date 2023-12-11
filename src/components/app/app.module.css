@@ -1,0 +1,11 @@
+.content {
+  box-shadow: 0 15px 30px 0 hsla(0, 0%, 0%, 0.3);
+  @apply max-w-[1440px] min-h-0 max-h-[1024px];
+}
+
+@media screen and (min-width: 1441px) {
+  .content {
+    @apply my-5;
+    @apply border border-separator rounded-xl;
+  }
+}

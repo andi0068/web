@@ -1,0 +1,11 @@
+.toast[data-state='closed'] {
+  animation: hide-animation-keyframes 0.15s ease-in;
+}
+@keyframes hide-animation-keyframes {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
