@@ -1,4 +1,4 @@
-import { env } from '@/utils';
+import { env } from '@/utils/generic-utils';
 
 const { AUTHOR_USERNAME } = env();
 

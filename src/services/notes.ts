@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import * as mod from 'firebase/database';
 
-import { createId, createDate } from '@/utils';
+import { createId, createDate } from '@/utils/services-utils';
 import type { NotesRecord, Note } from '@/types';
 
 import { APP } from './firebase';

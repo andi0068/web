@@ -3,7 +3,7 @@ import { useMemo, useCallback } from 'react';
 
 import * as ContextMenu from '@/lib/components/context-menu';
 import { useAppState, useAppDispatch } from '@/context';
-import { sortDesc, sortByPinned } from '@/utils';
+import { sortDesc, sortByPinned } from '@/utils/list-utils';
 import type { Note } from '@/types';
 
 import { useEvents } from '.';

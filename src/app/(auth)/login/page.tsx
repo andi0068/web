@@ -7,7 +7,7 @@ import Button from '@/lib/components/button';
 import useAsyncHandler from '@/lib/hooks/use-async-handler';
 import * as Card from '@/components/auth/card';
 import * as Auth from '@/services/auth';
-import { env } from '@/utils';
+import { env } from '@/utils/generic-utils';
 
 type Fields = {
   password: string;
