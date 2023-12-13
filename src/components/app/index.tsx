@@ -4,6 +4,7 @@ import { useMemo, useCallback, useContext, createContext } from 'react';
 import { FiFileText } from 'react-icons/fi';
 
 import Spinner from '@/lib/components/spinner';
+import type * as Notes from '@/services/notes';
 import { useAppState, useAppDispatch } from '@/context';
 
 import * as Base from './app';
@@ -16,11 +17,8 @@ import ListHeader from './_list-header';
 import EditorHeader from './_editor-header';
 
 type CreateHandler = () => Promise<{ id: string }>;
-type UpdateHandler = (
-  params: { id: string },
-  data: { title?: string; content?: string; pinned?: boolean },
-) => Promise<void>;
-type DeleteHandler = (params: { id: string }) => Promise<void>;
+type UpdateHandler = (params: Notes.UpdateParams, data: Notes.UpdateData) => Promise<void>;
+type DeleteHandler = (params: Notes.RemoveParams) => Promise<void>;
 
 type Handlers = {
   onCreate?: CreateHandler;
@@ -63,7 +61,7 @@ export function Content({ children }: BaseProps) {
 
 // Container **************************************************************************************
 
-function ViewsContainer({ children }: { children?: React.ReactNode }) {
+function ViewsContainer({ children }: BaseProps) {
   const state = useAppState();
   return state.preload ? (
     <Loader.Root overlay>
@@ -77,7 +75,7 @@ function ViewsContainer({ children }: { children?: React.ReactNode }) {
   );
 }
 
-function ListContainer({ children }: { children?: React.ReactNode }) {
+function ListContainer({ children }: BaseProps) {
   const state = useAppState();
   return state.notes.data.length ? (
     <ListView.ContentView>{children}</ListView.ContentView>
@@ -86,7 +84,7 @@ function ListContainer({ children }: { children?: React.ReactNode }) {
   );
 }
 
-function EditorContainer({ children }: { children?: React.ReactNode }) {
+function EditorContainer({ children }: BaseProps) {
   const state = useAppState();
   return state.notes.selected ? (
     <EditorView.ContentView>{children}</EditorView.ContentView>

@@ -6,16 +6,16 @@ import type { NotesRecord, Note } from '@/types';
 
 import { APP } from './firebase';
 
-type UpdateParams = {
+export type UpdateParams = {
   id: string;
 };
-type UpdateData = {
+export type UpdateData = {
   title?: string;
   content?: string;
   pinned?: boolean;
 };
 
-type RemoveParams = {
+export type RemoveParams = {
   id: string;
 };
 
