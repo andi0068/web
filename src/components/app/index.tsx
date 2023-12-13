@@ -79,7 +79,7 @@ function ViewsContainer({ children }: { children?: React.ReactNode }) {
 
 function ListContainer({ children }: { children?: React.ReactNode }) {
   const state = useAppState();
-  return state.data.length ? (
+  return state.notes.data.length ? (
     <ListView.ContentView>{children}</ListView.ContentView>
   ) : (
     <ListView.Alert>This folder is empty.</ListView.Alert>
@@ -88,7 +88,7 @@ function ListContainer({ children }: { children?: React.ReactNode }) {
 
 function EditorContainer({ children }: { children?: React.ReactNode }) {
   const state = useAppState();
-  return state.selected ? (
+  return state.notes.selected ? (
     <EditorView.ContentView>{children}</EditorView.ContentView>
   ) : (
     <EditorView.Alert.Root>
@@ -113,7 +113,7 @@ export function useEvents() {
   const onCreate = useCallback(async () => {
     if (handlers.onCreate) {
       const { id } = await handlers.onCreate();
-      dispatch.select(id);
+      dispatch.select('notes', id);
     }
   }, [handlers.onCreate]);
 

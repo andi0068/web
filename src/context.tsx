@@ -9,9 +9,11 @@ type State = {
     readonly user: boolean;
   };
   readonly preload: boolean;
-  readonly raw: NotesRecord;
-  readonly data: Note[];
-  readonly selected?: Note | null;
+  readonly notes: {
+    readonly raw: NotesRecord;
+    readonly data: Note[];
+    readonly selected?: Note | null;
+  };
 };
 type ContextType = State & {
   readonly dispatch: React.Dispatch<React.SetStateAction<State>>;
@@ -27,9 +29,11 @@ const INITIAL_STATE: State = {
     user: false,
   },
   preload: true,
-  raw: {},
-  data: [],
-  selected: null,
+  notes: {
+    raw: {},
+    data: [],
+    selected: null,
+  },
 };
 const DEFAULT_VALUE: ContextType = {
   ...INITIAL_STATE,
@@ -43,25 +47,23 @@ function useRootContext() {
 }
 
 export function Provider({ children }: ProviderProps) {
-  const [{ auth, preload, raw, data, selected }, dispatch] = useState<State>(() => ({
+  const [{ auth, preload, notes }, dispatch] = useState<State>(() => ({
     ...INITIAL_STATE,
   }));
   const value: ContextType = useMemo(
-    () => ({ auth, preload, raw, data, selected, dispatch }),
-    [auth.ready, auth.user, preload, raw, data, selected],
+    () => ({ auth, preload, notes, dispatch }),
+    [auth.ready, auth.user, preload, notes.raw, notes.data, notes.selected],
   );
 
   return <Context.Provider value={value}>{children}</Context.Provider>;
 }
 
 export function useAppState() {
-  const { auth, preload, raw, data, selected } = useRootContext();
+  const { auth, preload, notes } = useRootContext();
   return {
     auth,
     preload,
-    raw,
-    data,
-    selected,
+    notes,
   } as const;
 }
 
@@ -82,23 +84,31 @@ export function useAppDispatch() {
     dispatch((state) => ({
       ...state,
       preload: false,
-      raw,
-      data: Object.values(raw),
-      selected: state.selected ? raw[state.selected?.id] : state.selected,
+      notes: {
+        raw,
+        data: Object.values(raw),
+        selected: state.notes.selected ? raw[state.notes.selected.id] : state.notes.selected,
+      },
     }));
   }
 
-  function select(id: string) {
+  function select(source: 'notes', id: string) {
     dispatch((state) => ({
       ...state,
-      selected: state.raw[id],
+      [source]: {
+        ...state[source],
+        selected: state[source].raw[id],
+      },
     }));
   }
 
-  function unselect() {
+  function unselect(source: 'notes') {
     dispatch((state) => ({
       ...state,
-      selected: null,
+      [source]: {
+        ...state[source],
+        selected: null,
+      },
     }));
   }
 

@@ -12,11 +12,11 @@ export default function Editor() {
   const state = useAppState();
   const ev = useEvents();
 
-  if (!state.selected) {
-    throw Error('Please unmount it component, while state.selected is null or undefined.');
+  if (!state.notes.selected) {
+    throw Error('Please unmount it component, while state.notes.selected is null or undefined.');
   }
 
-  const selected = state.selected!;
+  const selected = state.notes.selected!;
   const readOnly = !state.auth.user;
 
   return (

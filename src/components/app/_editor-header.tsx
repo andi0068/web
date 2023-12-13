@@ -47,13 +47,13 @@ function MoreOptionsDropdownMenu({ children }: { children: React.ReactElement })
   const ev = useEvents();
 
   const onDelete = useCallback(
-    () => ev.onDelete?.({ id: state.selected!.id }),
-    [state.selected, ev.onDelete],
+    () => ev.onDelete?.({ id: state.notes.selected!.id }),
+    [state.notes.selected, ev.onDelete],
   );
 
   const items: Menu[] = state.auth.user
     ? [
-        { key: 'delete', label: 'Delete', disabled: !state.selected, onClick: onDelete },
+        { key: 'delete', label: 'Delete', disabled: !state.notes.selected, onClick: onDelete },
         'separator',
         { key: 'auth', label: 'Log out', onClick: ev.onLogout },
       ]

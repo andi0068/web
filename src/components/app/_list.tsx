@@ -25,7 +25,7 @@ interface AuthorOnlyBtnMenuProps {
  */
 export default function List() {
   const state = useAppState();
-  const items = useSort(state.data);
+  const items = useSort(state.notes.data);
   const menu = useMenu();
 
   return (
@@ -92,8 +92,8 @@ function useMenu() {
   const state = useAppState();
   const dispatch = useAppDispatch();
 
-  const isActive = (id: string) => id === state.selected?.id;
-  const onSelect = useCallback((id: string) => () => dispatch.select(id), []);
+  const isActive = (id: string) => id === state.notes.selected?.id;
+  const onSelect = useCallback((id: string) => () => dispatch.select('notes', id), []);
 
   return {
     isActive,
