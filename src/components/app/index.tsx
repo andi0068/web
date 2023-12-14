@@ -16,14 +16,14 @@ import List from './_list';
 import ListHeader from './_list-header';
 import EditorHeader from './_editor-header';
 
-type CreateHandler = () => Promise<{ id: string }>;
-type UpdateHandler = (params: Notes.UpdateParams, data: Notes.UpdateData) => Promise<void>;
-type DeleteHandler = (params: Notes.RemoveParams) => Promise<void>;
+type CreateNoteHandler = () => Promise<{ id: string }>;
+type UpdateNoteHandler = (params: Notes.UpdateParams, data: Notes.UpdateData) => Promise<void>;
+type DeleteNoteHandler = (params: Notes.RemoveParams) => Promise<void>;
 
 type Handlers = {
-  onCreate?: CreateHandler;
-  onUpdate?: UpdateHandler;
-  onDelete?: DeleteHandler;
+  onCreateNote?: CreateNoteHandler;
+  onUpdateNote?: UpdateNoteHandler;
+  onDeleteNote?: DeleteNoteHandler;
   onLogin?(): void;
   onLogout?(): Promise<void>;
 };
@@ -108,19 +108,19 @@ export function useEvents() {
   const dispatch = useAppDispatch();
   const handlers = useHandlersContext();
 
-  const onCreate = useCallback(async () => {
-    if (handlers.onCreate) {
-      const { id } = await handlers.onCreate();
+  const onCreateNote = useCallback(async () => {
+    if (handlers.onCreateNote) {
+      const { id } = await handlers.onCreateNote();
       dispatch.select('notes', id);
     }
-  }, [handlers.onCreate]);
+  }, [handlers.onCreateNote]);
 
-  const { onUpdate, onDelete, onLogin, onLogout } = handlers;
+  const { onUpdateNote, onDeleteNote, onLogin, onLogout } = handlers;
 
   return {
-    onCreate,
-    onUpdate,
-    onDelete,
+    onCreateNote,
+    onUpdateNote,
+    onDeleteNote,
     onLogin,
     onLogout,
   } as const;
@@ -136,15 +136,15 @@ function useHandlersContext() {
 
 export function Provider({
   children,
-  onCreate,
-  onUpdate,
-  onDelete,
+  onCreateNote,
+  onUpdateNote,
+  onDeleteNote,
   onLogin,
   onLogout,
 }: ProviderProps) {
   const value = useMemo(
-    () => ({ onCreate, onUpdate, onDelete, onLogin, onLogout }),
-    [onCreate, onUpdate, onDelete, onLogin, onLogout],
+    () => ({ onCreateNote, onUpdateNote, onDeleteNote, onLogin, onLogout }),
+    [onCreateNote, onUpdateNote, onDeleteNote, onLogin, onLogout],
   );
   return <HandlersContext.Provider value={value}>{children}</HandlersContext.Provider>;
 }

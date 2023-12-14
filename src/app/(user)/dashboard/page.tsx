@@ -10,9 +10,9 @@ import * as Notes from '@/services/notes';
 export default function Dashboard() {
   return (
     <App.Provider
-      onCreate={Notes.create}
-      onUpdate={Notes.update}
-      onDelete={useDeleteHandler()}
+      onCreateNote={Notes.create}
+      onUpdateNote={Notes.update}
+      onDeleteNote={useDeleteHandler()}
       onLogout={Auth.signOut}
     >
       <App.Root>

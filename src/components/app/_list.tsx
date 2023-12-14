@@ -57,9 +57,12 @@ export default function List() {
 function AuthorOnlyBtnMenu({ children, id, pinned }: AuthorOnlyBtnMenuProps) {
   const ev = useEvents();
 
-  const onPin = useCallback(() => ev.onUpdate?.({ id }, { pinned: true }), [ev.onUpdate]);
-  const onUnpin = useCallback(() => ev.onUpdate?.({ id }, { pinned: false }), [ev.onUpdate]);
-  const onDelete = useCallback(() => ev.onDelete?.({ id }), [ev.onDelete]);
+  const onPin = useCallback(() => ev.onUpdateNote?.({ id }, { pinned: true }), [ev.onUpdateNote]);
+  const onUnpin = useCallback(
+    () => ev.onUpdateNote?.({ id }, { pinned: false }),
+    [ev.onUpdateNote],
+  );
+  const onDelete = useCallback(() => ev.onDeleteNote?.({ id }), [ev.onDeleteNote]);
 
   const items = [
     { key: 'delete', label: 'Delete', onClick: onDelete },

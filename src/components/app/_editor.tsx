@@ -25,7 +25,7 @@ export default function Editor() {
         <Base.Header.Heading
           required
           readOnly={readOnly}
-          onChange={(title) => ev.onUpdate?.({ id: selected.id }, { title })}
+          onChange={(title) => ev.onUpdateNote?.({ id: selected.id }, { title })}
         >
           {selected.title}
         </Base.Header.Heading>
@@ -33,7 +33,7 @@ export default function Editor() {
       <Base.TextEdit
         value={selected.content}
         readOnly={readOnly}
-        onChange={(content) => ev.onUpdate?.({ id: selected.id }, { content })}
+        onChange={(content) => ev.onUpdateNote?.({ id: selected.id }, { content })}
       />
     </Base.Root>
   );

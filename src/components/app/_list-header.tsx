@@ -24,7 +24,7 @@ function AuthorOnlyActions() {
   const ev = useEvents();
   return (
     <Base.Actions.Root>
-      <Base.Actions.Action label="Create a new note" icon={FiFilePlus} onClick={ev.onCreate} />
+      <Base.Actions.Action label="Create a new note" icon={FiFilePlus} onClick={ev.onCreateNote} />
     </Base.Actions.Root>
   );
 }
