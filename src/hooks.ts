@@ -4,6 +4,7 @@ import { Fragment, useEffect, createElement } from 'react';
 
 import { useAppState, useAppDispatch } from '@/context';
 import * as Auth from '@/services/auth';
+import * as Folders from '@/services/folders';
 import * as Notes from '@/services/notes';
 
 type RedirectPaths = {
@@ -17,6 +18,14 @@ export function useAuthInitiator() {
 
   Auth.useSubscribe((user) => {
     dispatch.authReady(Boolean(user));
+  });
+}
+
+export function useFoldersInitiator() {
+  const dispatch = useAppDispatch();
+
+  Folders.useSubscribe((record) => {
+    dispatch.loaded('folders', record);
   });
 }
 
@@ -47,6 +56,11 @@ export function useRedirector(paths: RedirectPaths) {
 
 export function AuthInitiator() {
   useAuthInitiator();
+  return createElement(Fragment);
+}
+
+export function FoldersInitiator() {
+  useFoldersInitiator();
   return createElement(Fragment);
 }
 

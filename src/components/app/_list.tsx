@@ -9,6 +9,9 @@ import type { Note } from '@/types';
 import { useEvents } from '.';
 import * as Base from './list-view/list';
 
+interface ListProps {
+  items: Note[];
+}
 interface AuthorOnlyBtnMenuProps {
   children: React.ReactElement;
   id: string;
@@ -23,14 +26,14 @@ interface AuthorOnlyBtnMenuProps {
  *    - Toggle "Pin note" (author only)
  *    - Delete note (author only)
  */
-export default function List() {
+export default function List({ items }: ListProps) {
   const state = useAppState();
-  const items = useSort(state.notes.data);
+  const list = useSort(items);
   const menu = useMenu();
 
   return (
     <Base.Root>
-      {items.map((note) => {
+      {list.map((note) => {
         const active = menu.isActive(note.id);
         const button = (
           <Base.Button.Root active={active} onClick={menu.onSelect(note.id)}>

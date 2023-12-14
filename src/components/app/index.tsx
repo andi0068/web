@@ -4,23 +4,35 @@ import { useMemo, useCallback, useContext, createContext } from 'react';
 import { FiFileText } from 'react-icons/fi';
 
 import Spinner from '@/lib/components/spinner';
+import type * as Folders from '@/services/folders';
 import type * as Notes from '@/services/notes';
 import { useAppState, useAppDispatch } from '@/context';
+import type { Folder, Note } from '@/types';
 
 import * as Base from './app';
+import * as SideView from './side-view';
 import * as ListView from './list-view';
 import * as EditorView from './editor-view';
 import * as Loader from './loader';
 
+import Nav from './_nav';
 import List from './_list';
+import NavHeader from './_nav-header';
 import ListHeader from './_list-header';
 import EditorHeader from './_editor-header';
 
-type CreateNoteHandler = () => Promise<{ id: string }>;
+type CreateFolderHandler = () => Promise<{ id: string }>;
+type RenameFolderHandler = (params: Folder) => void;
+type DeleteFolderHandler = (params: Folders.RemoveParams) => Promise<void>;
+
+type CreateNoteHandler = (params: Notes.CreateParams) => Promise<{ id: string }>;
 type UpdateNoteHandler = (params: Notes.UpdateParams, data: Notes.UpdateData) => Promise<void>;
 type DeleteNoteHandler = (params: Notes.RemoveParams) => Promise<void>;
 
 type Handlers = {
+  onCreateFolder?: CreateFolderHandler;
+  onRenameFolder?: RenameFolderHandler;
+  onDeleteFolder?: DeleteFolderHandler;
   onCreateNote?: CreateNoteHandler;
   onUpdateNote?: UpdateNoteHandler;
   onDeleteNote?: DeleteNoteHandler;
@@ -41,11 +53,15 @@ export function Content({ children }: BaseProps) {
   return (
     <Base.Content>
       <ViewsContainer>
+        <SideView.Root>
+          <NavHeader />
+          <NavContainer>
+            <Nav />
+          </NavContainer>
+        </SideView.Root>
         <ListView.Root>
           <ListHeader />
-          <ListContainer>
-            <List />
-          </ListContainer>
+          <ListContainer>{(items) => <List items={items} />}</ListContainer>
         </ListView.Root>
         <EditorView.Root>
           <EditorHeader />
@@ -63,7 +79,7 @@ export function Content({ children }: BaseProps) {
 
 function ViewsContainer({ children }: BaseProps) {
   const state = useAppState();
-  return state.notes.ready ? (
+  return state.folders.ready && state.notes.ready ? (
     <>{children}</>
   ) : (
     <Loader.Root overlay>
@@ -75,10 +91,18 @@ function ViewsContainer({ children }: BaseProps) {
   );
 }
 
-function ListContainer({ children }: BaseProps) {
+function NavContainer({ children }: BaseProps) {
+  return <SideView.ContentView>{children}</SideView.ContentView>;
+}
+
+function ListContainer({ children }: { children(items: Note[]): React.ReactNode }) {
   const state = useAppState();
-  return state.notes.data.length ? (
-    <ListView.ContentView>{children}</ListView.ContentView>
+  return !state.folders.selected ? (
+    <ListView.Alert>Select a folder to view.</ListView.Alert>
+  ) : state.folders.selected.notes ? (
+    <ListView.ContentView>
+      {children(Object.keys(state.folders.selected.notes).map((id) => state.notes.raw[id]))}
+    </ListView.ContentView>
   ) : (
     <ListView.Alert>This folder is empty.</ListView.Alert>
   );
@@ -105,19 +129,37 @@ function EditorContainer({ children }: BaseProps) {
 // Hooks ******************************************************************************************
 
 export function useEvents() {
+  const state = useAppState();
   const dispatch = useAppDispatch();
   const handlers = useHandlersContext();
 
-  const onCreateNote = useCallback(async () => {
-    if (handlers.onCreateNote) {
-      const { id } = await handlers.onCreateNote();
-      dispatch.select('notes', id);
-    }
-  }, [handlers.onCreateNote]);
+  const onRenameFolder = useCallback(
+    (params: { id: string }) => {
+      const folder = state.folders.raw[params.id];
+      if (folder) {
+        handlers.onRenameFolder?.(folder);
+      }
+    },
+    [state.folders.raw, handlers.onRenameFolder],
+  );
 
-  const { onUpdateNote, onDeleteNote, onLogin, onLogout } = handlers;
+  const onCreateNote = useCallback(
+    async (params: Notes.CreateParams) => {
+      if (handlers.onCreateNote) {
+        const { id } = await handlers.onCreateNote(params);
+        dispatch.select('notes', id);
+      }
+    },
+    [handlers.onCreateNote],
+  );
+
+  const { onCreateFolder, onDeleteFolder, onUpdateNote, onDeleteNote, onLogin, onLogout } =
+    handlers;
 
   return {
+    onCreateFolder,
+    onRenameFolder,
+    onDeleteFolder,
     onCreateNote,
     onUpdateNote,
     onDeleteNote,
@@ -136,6 +178,9 @@ function useHandlersContext() {
 
 export function Provider({
   children,
+  onCreateFolder,
+  onRenameFolder,
+  onDeleteFolder,
   onCreateNote,
   onUpdateNote,
   onDeleteNote,
@@ -143,8 +188,26 @@ export function Provider({
   onLogout,
 }: ProviderProps) {
   const value = useMemo(
-    () => ({ onCreateNote, onUpdateNote, onDeleteNote, onLogin, onLogout }),
-    [onCreateNote, onUpdateNote, onDeleteNote, onLogin, onLogout],
+    () => ({
+      onCreateFolder,
+      onRenameFolder,
+      onDeleteFolder,
+      onCreateNote,
+      onUpdateNote,
+      onDeleteNote,
+      onLogin,
+      onLogout,
+    }),
+    [
+      onCreateFolder,
+      onRenameFolder,
+      onDeleteFolder,
+      onCreateNote,
+      onUpdateNote,
+      onDeleteNote,
+      onLogin,
+      onLogout,
+    ],
   );
   return <HandlersContext.Provider value={value}>{children}</HandlersContext.Provider>;
 }

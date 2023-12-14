@@ -6,7 +6,7 @@ export interface ViewOptions {
   /**
    * @default 'full'
    */
-  size?: 'list' | 'editor' | 'full';
+  size?: 'side' | 'list' | 'editor' | 'full';
   /**
    * @default 'none'
    */

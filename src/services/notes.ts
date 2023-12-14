@@ -6,6 +6,10 @@ import type { NotesRecord, Note } from '@/types';
 
 import { APP } from './firebase';
 
+export type CreateParams = {
+  folder_id: string;
+};
+
 export type UpdateParams = {
   id: string;
 };
@@ -34,15 +38,21 @@ export function useSubscribe(callback: (record: NotesRecord) => void) {
   useEffect(() => mod.onValue(REFS.root(), (snapshot) => callback(snapshot.val())), []);
 }
 
-export async function create() {
+export async function create(params: CreateParams) {
   const data: Note = {
     id: createId(),
+    folder_id: params.folder_id,
     date: createDate(),
     title: 'New Note',
     content: '',
   };
 
-  return mod.set(REFS.id(data.id), data).then(() => ({ id: data.id }));
+  return mod
+    .update(mod.ref(DB, '/'), {
+      [`/folders/${data.folder_id}/notes/${data.id}`]: true,
+      [`/notes/${data.id}`]: data,
+    })
+    .then(() => ({ id: data.id }));
 }
 
 export async function update(params: UpdateParams, data: UpdateData) {
@@ -50,5 +60,11 @@ export async function update(params: UpdateParams, data: UpdateData) {
 }
 
 export async function remove(params: RemoveParams) {
-  return mod.remove(REFS.id(params.id));
+  const note = await mod.get(REFS.id(params.id)).then((s) => s.val());
+  if (note) {
+    return mod.update(mod.ref(DB, '/'), {
+      [`/folders/${note.folder_id}/notes/${note.id}`]: null,
+      [`/notes/${note.id}`]: null,
+    });
+  }
 }

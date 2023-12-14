@@ -1,12 +1,18 @@
 'use client';
 import { useState, useMemo, useContext, createContext } from 'react';
 
-import type { NotesRecord, Note } from '@/types';
+import type { FoldersRecord, NotesRecord, Folder, Note } from '@/types';
 
 type State = {
   readonly auth: {
     readonly ready: boolean;
     readonly user: boolean;
+  };
+  readonly folders: {
+    readonly ready: boolean;
+    readonly raw: FoldersRecord;
+    readonly data: Folder[];
+    readonly selected?: Folder | null;
   };
   readonly notes: {
     readonly ready: boolean;
@@ -28,6 +34,12 @@ const INITIAL_STATE: State = {
     ready: false,
     user: false,
   },
+  folders: {
+    ready: false,
+    raw: {},
+    data: [],
+    selected: null,
+  },
   notes: {
     ready: false,
     raw: {},
@@ -47,21 +59,33 @@ function useRootContext() {
 }
 
 export function Provider({ children }: ProviderProps) {
-  const [{ auth, notes }, dispatch] = useState<State>(() => ({
+  const [{ auth, folders, notes }, dispatch] = useState<State>(() => ({
     ...INITIAL_STATE,
   }));
   const value: ContextType = useMemo(
-    () => ({ auth, notes, dispatch }),
-    [auth.ready, auth.user, notes.ready, notes.raw, notes.data, notes.selected],
+    () => ({ auth, folders, notes, dispatch }),
+    [
+      auth.ready,
+      auth.user,
+      folders.ready,
+      folders.raw,
+      folders.data,
+      folders.selected,
+      notes.ready,
+      notes.raw,
+      notes.data,
+      notes.selected,
+    ],
   );
 
   return <Context.Provider value={value}>{children}</Context.Provider>;
 }
 
 export function useAppState() {
-  const { auth, notes } = useRootContext();
+  const { auth, folders, notes } = useRootContext();
   return {
     auth,
+    folders,
     notes,
   } as const;
 }
@@ -79,7 +103,10 @@ export function useAppDispatch() {
     }));
   }
 
-  function loaded<Source extends 'notes'>(source: Source, raw: { notes: NotesRecord }[Source]) {
+  function loaded<Source extends 'folders' | 'notes'>(
+    source: Source,
+    raw: { folders: FoldersRecord; notes: NotesRecord }[Source],
+  ) {
     dispatch((state) => ({
       ...state,
       [source]: {
@@ -91,7 +118,7 @@ export function useAppDispatch() {
     }));
   }
 
-  function select(source: 'notes', id: string) {
+  function select(source: 'folders' | 'notes', id: string) {
     dispatch((state) => ({
       ...state,
       [source]: {
@@ -101,7 +128,7 @@ export function useAppDispatch() {
     }));
   }
 
-  function unselect(source: 'notes') {
+  function unselect(source: 'folders' | 'notes') {
     dispatch((state) => ({
       ...state,
       [source]: {
