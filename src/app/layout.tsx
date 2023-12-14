@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import { Source_Sans_3 } from 'next/font/google';
 
 import { Provider } from '@/context';
-import { AuthInitiator, NotesInitiator, Redirector } from '@/hooks';
+import { AuthInitiator, FoldersInitiator, NotesInitiator, Redirector } from '@/hooks';
 import { REDIRECT_PATHS } from '@/config/constants';
 import { siteConfig } from '@/config/site';
 
@@ -28,6 +28,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <Provider>
           {children}
           <AuthInitiator />
+          <FoldersInitiator />
           <NotesInitiator />
           <Redirector paths={REDIRECT_PATHS} />
         </Provider>

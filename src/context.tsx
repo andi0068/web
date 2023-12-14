@@ -34,17 +34,10 @@ const INITIAL_STATE: State = {
     ready: false,
     user: false,
   },
-  // TODO
   folders: {
     ready: false,
-    raw: {
-      '0001': { id: '0001', date: '2023-12-14', name: 'About' },
-      '0002': { id: '0002', date: '2023-12-14', name: 'New Folder' },
-    },
-    data: [
-      { id: '0001', date: '2023-12-14', name: 'About' },
-      { id: '0002', date: '2023-12-14', name: 'New Folder' },
-    ],
+    raw: {},
+    data: [],
     selected: null,
   },
   notes: {
@@ -110,7 +103,10 @@ export function useAppDispatch() {
     }));
   }
 
-  function loaded<Source extends 'notes'>(source: Source, raw: { notes: NotesRecord }[Source]) {
+  function loaded<Source extends 'folders' | 'notes'>(
+    source: Source,
+    raw: { folders: FoldersRecord; notes: NotesRecord }[Source],
+  ) {
     dispatch((state) => ({
       ...state,
       [source]: {

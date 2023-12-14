@@ -80,7 +80,7 @@ export function Content({ children }: BaseProps) {
 
 function ViewsContainer({ children }: BaseProps) {
   const state = useAppState();
-  return state.notes.ready ? (
+  return state.folders.ready && state.notes.ready ? (
     <>{children}</>
   ) : (
     <Loader.Root overlay>
