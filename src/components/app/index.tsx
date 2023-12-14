@@ -4,6 +4,7 @@ import { useMemo, useCallback, useContext, createContext } from 'react';
 import { FiFileText } from 'react-icons/fi';
 
 import Spinner from '@/lib/components/spinner';
+import type * as Folders from '@/services/folders';
 import type * as Notes from '@/services/notes';
 import { useAppState, useAppDispatch } from '@/context';
 import type { Folder } from '@/types';
@@ -22,7 +23,7 @@ import EditorHeader from './_editor-header';
 
 type CreateFolderHandler = () => Promise<{ id: string }>;
 type RenameFolderHandler = (params: Folder) => void;
-type DeleteFolderHandler = (params: { id: string }) => Promise<void>;
+type DeleteFolderHandler = (params: Folders.RemoveParams) => Promise<void>;
 
 type CreateNoteHandler = () => Promise<{ id: string }>;
 type UpdateNoteHandler = (params: Notes.UpdateParams, data: Notes.UpdateData) => Promise<void>;

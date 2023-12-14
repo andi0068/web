@@ -8,14 +8,14 @@ import * as App from '@/components/app';
 import * as Dialog from '@/components/app/dialog';
 import * as Toast from '@/components/app/toast';
 import * as Auth from '@/services/auth';
+import * as Folders from '@/services/folders';
 import * as Notes from '@/services/notes';
 import type { Folder } from '@/types';
 
 export default function Dashboard() {
   return (
     <App.Provider
-      // TODO
-      // onCreateFolder={}
+      onCreateFolder={Folders.create}
       onRenameFolder={useRenameFolderHandler()}
       onDeleteFolder={useDeleteFolderHandler()}
       onCreateNote={Notes.create}
@@ -54,8 +54,7 @@ function useRenameFolderHandler() {
         children: createElement(RenameFolderFormField, { name: params.name }),
         button: { label: 'Save' },
         async onSubmit(data: {}) {
-          // TODO
-          window.alert(JSON.stringify(data));
+          await Folders.update({ id: params.id }, data);
           dialog.close();
         },
       }),
@@ -74,8 +73,7 @@ function useDeleteFolderHandler() {
         button: {
           label: 'Delete',
           async onClick() {
-            // TODO
-            window.alert(JSON.stringify(params));
+            await Folders.remove(params);
             toast('Deleted from Folders.');
           },
         },
