@@ -63,15 +63,15 @@ export function Content({ children }: BaseProps) {
 
 function ViewsContainer({ children }: BaseProps) {
   const state = useAppState();
-  return state.preload ? (
+  return state.notes.ready ? (
+    <>{children}</>
+  ) : (
     <Loader.Root overlay>
       <Loader.Content>
         <Spinner />
         <Loader.Typography>Loading...</Loader.Typography>
       </Loader.Content>
     </Loader.Root>
-  ) : (
-    <>{children}</>
   );
 }
 

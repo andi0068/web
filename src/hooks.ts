@@ -24,7 +24,7 @@ export function useNotesInitiator() {
   const dispatch = useAppDispatch();
 
   Notes.useSubscribe((record) => {
-    dispatch.loaded(record);
+    dispatch.loaded('notes', record);
   });
 }
 

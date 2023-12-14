@@ -8,8 +8,8 @@ type State = {
     readonly ready: boolean;
     readonly user: boolean;
   };
-  readonly preload: boolean;
   readonly notes: {
+    readonly ready: boolean;
     readonly raw: NotesRecord;
     readonly data: Note[];
     readonly selected?: Note | null;
@@ -28,8 +28,8 @@ const INITIAL_STATE: State = {
     ready: false,
     user: false,
   },
-  preload: true,
   notes: {
+    ready: false,
     raw: {},
     data: [],
     selected: null,
@@ -47,22 +47,21 @@ function useRootContext() {
 }
 
 export function Provider({ children }: ProviderProps) {
-  const [{ auth, preload, notes }, dispatch] = useState<State>(() => ({
+  const [{ auth, notes }, dispatch] = useState<State>(() => ({
     ...INITIAL_STATE,
   }));
   const value: ContextType = useMemo(
-    () => ({ auth, preload, notes, dispatch }),
-    [auth.ready, auth.user, preload, notes.raw, notes.data, notes.selected],
+    () => ({ auth, notes, dispatch }),
+    [auth.ready, auth.user, notes.ready, notes.raw, notes.data, notes.selected],
   );
 
   return <Context.Provider value={value}>{children}</Context.Provider>;
 }
 
 export function useAppState() {
-  const { auth, preload, notes } = useRootContext();
+  const { auth, notes } = useRootContext();
   return {
     auth,
-    preload,
     notes,
   } as const;
 }
@@ -80,14 +79,14 @@ export function useAppDispatch() {
     }));
   }
 
-  function loaded(raw: NotesRecord) {
+  function loaded<Source extends 'notes'>(source: Source, raw: { notes: NotesRecord }[Source]) {
     dispatch((state) => ({
       ...state,
-      preload: false,
-      notes: {
+      [source]: {
+        ready: true,
         raw,
         data: Object.values(raw),
-        selected: state.notes.selected ? raw[state.notes.selected.id] : state.notes.selected,
+        selected: state[source].selected ? raw[state[source].selected!.id] : state[source].selected,
       },
     }));
   }
