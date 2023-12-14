@@ -1,13 +1,38 @@
 'use client';
-import { useCallback } from 'react';
+import { useCallback, forwardRef } from 'react';
 
 import * as Base from '@/lib/components/dialog';
+import * as RootForm from '@/lib/components/form';
 import Button from '@/lib/components/button';
 import useAsyncHandler from '@/lib/hooks/use-async-handler';
 import { cn } from '@/lib/utils';
 
 import { useDialogContext } from '../dialog.context';
-import type { AlertProps, AboutProps, ButtonMouseEventHandler } from './contents.types';
+import type { FormProps, AlertProps, AboutProps, ButtonMouseEventHandler } from './contents.types';
+
+export const Form = forwardRef<HTMLFormElement, FormProps>(
+  ({ children, onSubmit: onSubmitProp, button, ...rest }, ref) => {
+    const { title } = useDialogContext();
+    const [loading, onSubmit] = useAsyncHandler(onSubmitProp);
+
+    return (
+      <Base.Content role="dialog" className="rounded-lg">
+        <Base.Header>
+          <Base.Title>{title}</Base.Title>
+          <Base.Close />
+        </Base.Header>
+        <RootForm.Root ref={ref} onSubmit={onSubmit} {...rest}>
+          <Base.Body>{children}</Base.Body>
+          <Base.Footer>
+            <Button type="submit" disabled={loading} className="rounded-md">
+              {button.label}
+            </Button>
+          </Base.Footer>
+        </RootForm.Root>
+      </Base.Content>
+    );
+  },
+);
 
 export function Alert({ button }: AlertProps) {
   const { title, close } = useDialogContext();

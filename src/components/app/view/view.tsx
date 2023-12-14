@@ -11,6 +11,7 @@ import type { BaseProps, ViewProps } from './view.types';
 const getRootClassName = cva(`${BEM_CLASS} shrink-0 flex flex-col`, {
   variants: {
     size: {
+      side: 'w-[14rem]',
       list: 'w-[18rem]',
       editor: 'grow min-w-[32.375rem]',
       full: 'w-full',

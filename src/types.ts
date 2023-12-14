@@ -7,6 +7,13 @@ export type Menu =
     }
   | 'separator';
 
+export type Folder = {
+  id: string;
+  date: string;
+  name: string;
+  notes?: Record<string, true>;
+};
+
 export type Note = {
   id: string;
   date: string;
@@ -15,4 +22,5 @@ export type Note = {
   pinned?: boolean;
 };
 
+export type FoldersRecord = Record<string, Folder>;
 export type NotesRecord = Record<string, Note>;

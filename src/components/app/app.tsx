@@ -15,7 +15,7 @@ export function Root({ children, className }: BaseProps) {
   );
 }
 
-export function Content({ children, className, as: As = 'main', ...rest }: ContentProps) {
+export function Content({ children, className, as: As = 'div', ...rest }: ContentProps) {
   return (
     <As
       className={cn(
@@ -29,6 +29,10 @@ export function Content({ children, className, as: As = 'main', ...rest }: Conte
       {children}
     </As>
   );
+}
+
+export function Main({ children, className }: BaseProps) {
+  return <main className={cn(`${BEM_CLASS}__main grow flex`, className)}>{children}</main>;
 }
 
 export type * from './app.types';
