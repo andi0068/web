@@ -7,7 +7,7 @@ import Spinner from '@/lib/components/spinner';
 import type * as Folders from '@/services/folders';
 import type * as Notes from '@/services/notes';
 import { useAppState, useAppDispatch } from '@/context';
-import type { Folder } from '@/types';
+import type { Folder, Note } from '@/types';
 
 import * as Base from './app';
 import * as SideView from './side-view';
@@ -25,7 +25,7 @@ type CreateFolderHandler = () => Promise<{ id: string }>;
 type RenameFolderHandler = (params: Folder) => void;
 type DeleteFolderHandler = (params: Folders.RemoveParams) => Promise<void>;
 
-type CreateNoteHandler = () => Promise<{ id: string }>;
+type CreateNoteHandler = (params: Notes.CreateParams) => Promise<{ id: string }>;
 type UpdateNoteHandler = (params: Notes.UpdateParams, data: Notes.UpdateData) => Promise<void>;
 type DeleteNoteHandler = (params: Notes.RemoveParams) => Promise<void>;
 
@@ -61,9 +61,7 @@ export function Content({ children }: BaseProps) {
         </SideView.Root>
         <ListView.Root>
           <ListHeader />
-          <ListContainer>
-            <List />
-          </ListContainer>
+          <ListContainer>{(items) => <List items={items} />}</ListContainer>
         </ListView.Root>
         <EditorView.Root>
           <EditorHeader />
@@ -97,10 +95,14 @@ function NavContainer({ children }: BaseProps) {
   return <SideView.ContentView>{children}</SideView.ContentView>;
 }
 
-function ListContainer({ children }: BaseProps) {
+function ListContainer({ children }: { children(items: Note[]): React.ReactNode }) {
   const state = useAppState();
-  return state.notes.data.length ? (
-    <ListView.ContentView>{children}</ListView.ContentView>
+  return !state.folders.selected ? (
+    <ListView.Alert>Select a folder to view.</ListView.Alert>
+  ) : state.folders.selected.notes ? (
+    <ListView.ContentView>
+      {children(Object.keys(state.folders.selected.notes).map((id) => state.notes.raw[id]))}
+    </ListView.ContentView>
   ) : (
     <ListView.Alert>This folder is empty.</ListView.Alert>
   );
@@ -141,12 +143,15 @@ export function useEvents() {
     [state.folders.raw, handlers.onRenameFolder],
   );
 
-  const onCreateNote = useCallback(async () => {
-    if (handlers.onCreateNote) {
-      const { id } = await handlers.onCreateNote();
-      dispatch.select('notes', id);
-    }
-  }, [handlers.onCreateNote]);
+  const onCreateNote = useCallback(
+    async (params: Notes.CreateParams) => {
+      if (handlers.onCreateNote) {
+        const { id } = await handlers.onCreateNote(params);
+        dispatch.select('notes', id);
+      }
+    },
+    [handlers.onCreateNote],
+  );
 
   const { onCreateFolder, onDeleteFolder, onUpdateNote, onDeleteNote, onLogin, onLogout } =
     handlers;

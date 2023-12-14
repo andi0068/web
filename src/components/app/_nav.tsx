@@ -13,7 +13,14 @@ interface AuthorOnlyBtnMenuProps {
   id: string;
 }
 
-// TODO
+/**
+ * Features
+ * - Select and Active state
+ * - Context Menu
+ *    - Rename folder (author only)
+ *    - Delete folder (author only)
+ *    - Create a new note inside (author only)
+ */
 export default function Nav() {
   return (
     <Base.Root>
@@ -58,18 +65,22 @@ function List() {
 function AuthorOnlyBtnMenu({ children, id }: AuthorOnlyBtnMenuProps) {
   const ev = useEvents();
 
-  const onRename = useCallback(() => ev.onRenameFolder?.({ id }), [id, ev.onRenameFolder]);
-  const onDelete = useCallback(() => ev.onDeleteFolder?.({ id }), [id, ev.onDeleteFolder]);
+  const onRenameFolder = useCallback(() => ev.onRenameFolder?.({ id }), [id, ev.onRenameFolder]);
+  const onDeleteFolder = useCallback(() => ev.onDeleteFolder?.({ id }), [id, ev.onDeleteFolder]);
+  const onCreateNote = useCallback(
+    () => ev.onCreateNote?.({ folder_id: id }),
+    [id, ev.onCreateNote],
+  );
 
   return (
     <ContextMenu.Root>
       <ContextMenu.Trigger asChild>{children}</ContextMenu.Trigger>
       <ContextMenu.Portal>
         <ContextMenu.Content>
-          <ContextMenu.Item onClick={onRename}>Rename</ContextMenu.Item>
-          <ContextMenu.Item onClick={onDelete}>Delete</ContextMenu.Item>
+          <ContextMenu.Item onClick={onRenameFolder}>Rename</ContextMenu.Item>
+          <ContextMenu.Item onClick={onDeleteFolder}>Delete</ContextMenu.Item>
           <ContextMenu.Separator />
-          <ContextMenu.Item>Create note</ContextMenu.Item>
+          <ContextMenu.Item onClick={onCreateNote}>Create note</ContextMenu.Item>
         </ContextMenu.Content>
       </ContextMenu.Portal>
     </ContextMenu.Root>

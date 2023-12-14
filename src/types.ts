@@ -16,6 +16,7 @@ export type Folder = {
 
 export type Note = {
   id: string;
+  folder_id: string;
   date: string;
   title: string;
   content: string;
