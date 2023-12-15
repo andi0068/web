@@ -1,6 +1,6 @@
 'use client';
 import { useRouter, usePathname } from 'next/navigation';
-import { Fragment, useEffect, useMemo, createElement } from 'react';
+import { Fragment, useEffect, useMemo, useCallback, createElement } from 'react';
 
 import { useAppState, useAppDispatch } from '@/context';
 import * as Auth from '@/services/auth';
@@ -53,6 +53,22 @@ export function useRedirector(paths: RedirectPaths) {
       if (pathname === paths.user) router.replace(paths.public);
     }
   }, [pathname, state.auth.ready, state.auth.user]);
+}
+
+export function useMenu(source: 'folders' | 'notes') {
+  const state = useAppState();
+  const dispatch = useAppDispatch();
+
+  function isSelected(id: string) {
+    return state[source].selected?.id === id;
+  }
+
+  const onSelect = useCallback((id: string) => () => dispatch.select(source, id), [source]);
+
+  return {
+    isSelected,
+    onSelect,
+  } as const;
 }
 
 export function useGet(source: 'notes', by?: Record<string, true>) {

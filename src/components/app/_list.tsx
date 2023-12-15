@@ -2,8 +2,8 @@
 import { useMemo, useCallback } from 'react';
 
 import * as ContextMenu from '@/lib/components/context-menu';
-import { useAppState, useAppDispatch } from '@/context';
-import { useGet } from '@/hooks';
+import { useAppState } from '@/context';
+import { useMenu, useGet } from '@/hooks';
 import { sortDesc, sortByPinned } from '@/utils/list-utils';
 import type { Note } from '@/types';
 
@@ -15,6 +15,8 @@ interface AuthorOnlyBtnMenuProps {
   id: string;
   pinned?: boolean;
 }
+
+const SOURCE = 'notes';
 
 /**
  * Features
@@ -31,14 +33,14 @@ export default function List() {
     throw Error('Please unmount it component, while state.folders.selected is null or undefined.');
   }
 
-  const items = useGet('notes', state.folders.selected.notes);
+  const items = useGet(SOURCE, state.folders.selected[SOURCE]);
   const list = useSort(items);
-  const menu = useMenu();
+  const menu = useMenu(SOURCE);
 
   return (
     <Base.Root>
       {list.map((note) => {
-        const active = menu.isActive(note.id);
+        const active = menu.isSelected(note.id);
         const button = (
           <Base.Button.Root active={active} onClick={menu.onSelect(note.id)}>
             <Base.Button.Title>{note.title}</Base.Button.Title>
@@ -96,17 +98,4 @@ function AuthorOnlyBtnMenu({ children, id, pinned }: AuthorOnlyBtnMenuProps) {
 
 function useSort(notes: Note[]) {
   return useMemo(() => sortByPinned(sortDesc(notes)), [notes]);
-}
-
-function useMenu() {
-  const state = useAppState();
-  const dispatch = useAppDispatch();
-
-  const isActive = (id: string) => id === state.notes.selected?.id;
-  const onSelect = useCallback((id: string) => () => dispatch.select('notes', id), []);
-
-  return {
-    isActive,
-    onSelect,
-  } as const;
 }

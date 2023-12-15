@@ -3,7 +3,8 @@ import { Fragment, useCallback } from 'react';
 import { FiFolder } from 'react-icons/fi';
 
 import * as ContextMenu from '@/lib/components/context-menu';
-import { useAppState, useAppDispatch } from '@/context';
+import { useAppState } from '@/context';
+import { useMenu } from '@/hooks';
 
 import { useEvents } from '.';
 import * as Base from './side-view/nav';
@@ -38,7 +39,7 @@ export default function Nav() {
 
 function List() {
   const state = useAppState();
-  const menu = useMenu();
+  const menu = useMenu('folders');
 
   return (
     <Base.Section.List.Root>
@@ -46,7 +47,7 @@ function List() {
         const row = (
           <Base.Section.List.Row
             icon={FiFolder}
-            active={menu.isActive(folder.id)}
+            active={menu.isSelected(folder.id)}
             onClick={menu.onSelect(folder.id)}
           >
             {folder.name}
@@ -85,17 +86,4 @@ function AuthorOnlyBtnMenu({ children, id }: AuthorOnlyBtnMenuProps) {
       </ContextMenu.Portal>
     </ContextMenu.Root>
   );
-}
-
-function useMenu() {
-  const state = useAppState();
-  const dispatch = useAppDispatch();
-
-  const isActive = (id: string) => id === state.folders.selected?.id;
-  const onSelect = useCallback((id: string) => () => dispatch.select('folders', id), []);
-
-  return {
-    isActive,
-    onSelect,
-  } as const;
 }
