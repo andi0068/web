@@ -1,11 +1,12 @@
 'use client';
 import { useRouter, usePathname } from 'next/navigation';
-import { Fragment, useEffect, createElement } from 'react';
+import { Fragment, useEffect, useMemo, createElement } from 'react';
 
 import { useAppState, useAppDispatch } from '@/context';
 import * as Auth from '@/services/auth';
 import * as Folders from '@/services/folders';
 import * as Notes from '@/services/notes';
+import { get } from '@/utils/list-utils';
 
 type RedirectPaths = {
   public: string;
@@ -52,6 +53,14 @@ export function useRedirector(paths: RedirectPaths) {
       if (pathname === paths.user) router.replace(paths.public);
     }
   }, [pathname, state.auth.ready, state.auth.user]);
+}
+
+export function useGet(source: 'notes', by?: Record<string, true>) {
+  const state = useAppState();
+
+  const { raw } = state[source];
+
+  return useMemo(() => get(raw, by), [raw, by]);
 }
 
 export function AuthInitiator() {

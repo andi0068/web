@@ -7,7 +7,7 @@ import Spinner from '@/lib/components/spinner';
 import type * as Folders from '@/services/folders';
 import type * as Notes from '@/services/notes';
 import { useAppState, useAppDispatch } from '@/context';
-import type { Folder, Note } from '@/types';
+import type { Folder } from '@/types';
 
 import * as Base from './app';
 import * as SideView from './side-view';
@@ -61,7 +61,9 @@ export function Content({ children }: BaseProps) {
         </SideView.Root>
         <ListView.Root>
           <ListHeader />
-          <ListContainer>{(items) => <List items={items} />}</ListContainer>
+          <ListContainer>
+            <List />
+          </ListContainer>
         </ListView.Root>
         <EditorView.Root>
           <EditorHeader />
@@ -95,14 +97,12 @@ function NavContainer({ children }: BaseProps) {
   return <SideView.ContentView>{children}</SideView.ContentView>;
 }
 
-function ListContainer({ children }: { children(items: Note[]): React.ReactNode }) {
+function ListContainer({ children }: BaseProps) {
   const state = useAppState();
   return !state.folders.selected ? (
     <ListView.Alert>Select a folder to view.</ListView.Alert>
   ) : state.folders.selected.notes ? (
-    <ListView.ContentView>
-      {children(Object.keys(state.folders.selected.notes).map((id) => state.notes.raw[id]))}
-    </ListView.ContentView>
+    <ListView.ContentView>{children}</ListView.ContentView>
   ) : (
     <ListView.Alert>This folder is empty.</ListView.Alert>
   );

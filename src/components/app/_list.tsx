@@ -3,15 +3,13 @@ import { useMemo, useCallback } from 'react';
 
 import * as ContextMenu from '@/lib/components/context-menu';
 import { useAppState, useAppDispatch } from '@/context';
+import { useGet } from '@/hooks';
 import { sortDesc, sortByPinned } from '@/utils/list-utils';
 import type { Note } from '@/types';
 
 import { useEvents } from '.';
 import * as Base from './list-view/list';
 
-interface ListProps {
-  items: Note[];
-}
 interface AuthorOnlyBtnMenuProps {
   children: React.ReactElement;
   id: string;
@@ -26,8 +24,14 @@ interface AuthorOnlyBtnMenuProps {
  *    - Toggle "Pin note" (author only)
  *    - Delete note (author only)
  */
-export default function List({ items }: ListProps) {
+export default function List() {
   const state = useAppState();
+
+  if (!state.folders.selected) {
+    throw Error('Please unmount it component, while state.folders.selected is null or undefined.');
+  }
+
+  const items = useGet('notes', state.folders.selected.notes);
   const list = useSort(items);
   const menu = useMenu();
 

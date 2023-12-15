@@ -15,3 +15,16 @@ export function sortByPinned<T extends { pinned?: boolean }>(items: T[]) {
 
   return [...pinned, ...unpinned];
 }
+
+export function get<T>(from: Record<string, T>, by?: Record<string, true>) {
+  if (!by) return [];
+  let res: T[] = [];
+
+  for (const key in by) {
+    if (key in from) {
+      res = [...res, from[key]];
+    }
+  }
+
+  return res;
+}
