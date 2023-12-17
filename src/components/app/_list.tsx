@@ -80,10 +80,13 @@ function AuthorOnlyBtnMenu({ children, id, pinned }: AuthorOnlyBtnMenuProps) {
     [id, ev.onUpdateNote, ev.onDeleteNote],
   );
 
-  const items: Menu[] = [
-    factory.author.delete_note,
-    factory.author[pinned ? 'unpin_note' : 'pin_note'], // Toggle "Pin note"
-  ];
+  const items = useMemo(
+    (): Menu[] => [
+      factory.author.delete_note,
+      factory.author[pinned ? 'unpin_note' : 'pin_note'], // Toggle "Pin note"
+    ],
+    [pinned, factory],
+  );
 
   return <ContextMenu items={items}>{children}</ContextMenu>;
 }

@@ -1,5 +1,5 @@
 'use client';
-import { Fragment } from 'react';
+import { Fragment, useMemo } from 'react';
 import { FiFolder } from 'react-icons/fi';
 
 import ContextMenu from '@/components/context-menu';
@@ -81,11 +81,14 @@ function AuthorOnlyBtnMenu({ children, id }: AuthorOnlyBtnMenuProps) {
     [id, ev.onRenameFolder, ev.onDeleteFolder, ev.onCreateNote],
   );
 
-  const items: Menu[] = [
-    factory.author.rename_folder,
-    factory.author.delete_folder,
-    factory.author.create_note_inside,
-  ];
+  const items = useMemo(
+    (): Menu[] => [
+      factory.author.rename_folder,
+      factory.author.delete_folder,
+      factory.author.create_note_inside,
+    ],
+    [factory],
+  );
 
   return <ContextMenu items={items}>{children}</ContextMenu>;
 }

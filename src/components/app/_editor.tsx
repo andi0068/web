@@ -1,4 +1,6 @@
 'use client';
+import { useCallback } from 'react';
+
 import { useAppState } from '@/context';
 
 import { useEvents } from '.';
@@ -16,25 +18,24 @@ export default function Editor() {
     throw Error('Please unmount it component, while state.notes.selected is null or undefined.');
   }
 
-  const selected = state.notes.selected!;
+  const { selected } = state.notes;
   const readOnly = !state.auth.user;
+
+  const onChange = useCallback(
+    (key: 'title' | 'content') => (val: string) => {
+      ev.onUpdateNote?.({ id: selected.id }, { [key]: val });
+    },
+    [selected.id, ev.onUpdateNote],
+  );
 
   return (
     <Base.Root>
       <Base.Header.Root>
-        <Base.Header.Heading
-          required
-          readOnly={readOnly}
-          onChange={(title) => ev.onUpdateNote?.({ id: selected.id }, { title })}
-        >
+        <Base.Header.Heading required readOnly={readOnly} onChange={onChange('title')}>
           {selected.title}
         </Base.Header.Heading>
       </Base.Header.Root>
-      <Base.TextEdit
-        value={selected.content}
-        readOnly={readOnly}
-        onChange={(content) => ev.onUpdateNote?.({ id: selected.id }, { content })}
-      />
+      <Base.TextEdit value={selected.content} readOnly={readOnly} onChange={onChange('content')} />
     </Base.Root>
   );
 }

@@ -1,4 +1,5 @@
 'use client';
+import { useMemo } from 'react';
 import { FiSidebar } from 'react-icons/fi';
 
 import AiOptions from '@/lib/components/icons/options';
@@ -56,13 +57,16 @@ function MoreOptionsDropdownMenu({ children }: { children: React.ReactElement })
     [state.notes.selected, ev.onLogin, ev.onLogout, ev.onDeleteNote],
   );
 
-  const items: Menu[] = state.auth.user
-    ? [
+  const items = useMemo((): Menu[] => {
+    if (state.auth.user) {
+      return [
         { ...factory.author.delete_note, disabled: !state.notes.selected },
         'separator',
         factory.general.logout,
-      ]
-    : [factory.general.login];
+      ];
+    }
+    return [factory.general.login];
+  }, [state.auth.user, state.notes.selected, factory]);
 
   return (
     <DropdownMenu align="end" items={items}>
