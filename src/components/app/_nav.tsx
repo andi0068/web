@@ -1,10 +1,10 @@
 'use client';
-import { Fragment, useCallback } from 'react';
+import { Fragment } from 'react';
 import { FiFolder } from 'react-icons/fi';
 
 import ContextMenu from '@/components/context-menu';
 import { useAppState } from '@/context';
-import { useMenu } from '@/hooks';
+import { useMenu, useMenuFactory } from '@/hooks';
 import type { Menu } from '@/types';
 
 import { useEvents } from '.';
@@ -66,18 +66,25 @@ function List() {
 
 function AuthorOnlyBtnMenu({ children, id }: AuthorOnlyBtnMenuProps) {
   const ev = useEvents();
-
-  const onRenameFolder = useCallback(() => ev.onRenameFolder?.({ id }), [id, ev.onRenameFolder]);
-  const onDeleteFolder = useCallback(() => ev.onDeleteFolder?.({ id }), [id, ev.onDeleteFolder]);
-  const onCreateNote = useCallback(
-    () => ev.onCreateNote?.({ folder_id: id }),
-    [id, ev.onCreateNote],
+  const factory = useMenuFactory(
+    {
+      onRenameFolder() {
+        ev.onRenameFolder?.({ id });
+      },
+      onDeleteFolder() {
+        ev.onDeleteFolder?.({ id });
+      },
+      onCreateNote() {
+        ev.onCreateNote?.({ folder_id: id });
+      },
+    },
+    [id, ev.onRenameFolder, ev.onDeleteFolder, ev.onCreateNote],
   );
 
   const items: Menu[] = [
-    { key: 'rename_folder', label: 'Rename', onClick: onRenameFolder },
-    { key: 'delete_folder', label: 'Delete', onClick: onDeleteFolder },
-    { key: 'create_note_inside', label: 'Create note', onClick: onCreateNote },
+    factory.author.rename_folder,
+    factory.author.delete_folder,
+    factory.author.create_note_inside,
   ];
 
   return <ContextMenu items={items}>{children}</ContextMenu>;

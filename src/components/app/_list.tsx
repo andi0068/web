@@ -1,9 +1,9 @@
 'use client';
-import { useMemo, useCallback } from 'react';
+import { useMemo } from 'react';
 
 import ContextMenu from '@/components/context-menu';
 import { useAppState } from '@/context';
-import { useMenu, useGet } from '@/hooks';
+import { useMenu, useGet, useMenuFactory } from '@/hooks';
 import { sortDesc, sortByPinned } from '@/utils/list-utils';
 import type { Menu, Note } from '@/types';
 
@@ -65,19 +65,24 @@ export default function List() {
 
 function AuthorOnlyBtnMenu({ children, id, pinned }: AuthorOnlyBtnMenuProps) {
   const ev = useEvents();
-
-  const onPin = useCallback(() => ev.onUpdateNote?.({ id }, { pinned: true }), [ev.onUpdateNote]);
-  const onUnpin = useCallback(
-    () => ev.onUpdateNote?.({ id }, { pinned: false }),
-    [ev.onUpdateNote],
+  const factory = useMenuFactory(
+    {
+      onPinNote() {
+        ev.onUpdateNote?.({ id }, { pinned: true });
+      },
+      onUnpinNote() {
+        ev.onUpdateNote?.({ id }, { pinned: false });
+      },
+      onDeleteNote() {
+        ev.onDeleteNote?.({ id });
+      },
+    },
+    [id, ev.onUpdateNote, ev.onDeleteNote],
   );
-  const onDelete = useCallback(() => ev.onDeleteNote?.({ id }), [ev.onDeleteNote]);
 
   const items: Menu[] = [
-    { key: 'delete', label: 'Delete', onClick: onDelete },
-    pinned // Toggle "Pin note"
-      ? { key: 'pin', label: 'Unpin note', onClick: onUnpin }
-      : { key: 'pin', label: 'Pin note', onClick: onPin },
+    factory.author.delete_note,
+    factory.author[pinned ? 'unpin_note' : 'pin_note'], // Toggle "Pin note"
   ];
 
   return <ContextMenu items={items}>{children}</ContextMenu>;

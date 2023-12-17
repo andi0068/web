@@ -7,6 +7,7 @@ import * as Auth from '@/services/auth';
 import * as Folders from '@/services/folders';
 import * as Notes from '@/services/notes';
 import { get } from '@/utils/list-utils';
+import { MenuFactory, type MenuFactoryProps } from '@/utils/factory-utils';
 
 type RedirectPaths = {
   public: string;
@@ -77,6 +78,10 @@ export function useGet(source: 'notes', by?: Record<string, true>) {
   const { raw } = state[source];
 
   return useMemo(() => get(raw, by), [raw, by]);
+}
+
+export function useMenuFactory(props: MenuFactoryProps, deps: React.DependencyList) {
+  return useMemo(() => MenuFactory(props), deps);
 }
 
 export function AuthInitiator() {
