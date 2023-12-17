@@ -1,11 +1,11 @@
 'use client';
 import { useMemo, useCallback } from 'react';
 
-import * as ContextMenu from '@/lib/components/context-menu';
+import ContextMenu from '@/components/context-menu';
 import { useAppState } from '@/context';
 import { useMenu, useGet } from '@/hooks';
 import { sortDesc, sortByPinned } from '@/utils/list-utils';
-import type { Note } from '@/types';
+import type { Menu, Note } from '@/types';
 
 import { useEvents } from '.';
 import * as Base from './list-view/list';
@@ -73,27 +73,14 @@ function AuthorOnlyBtnMenu({ children, id, pinned }: AuthorOnlyBtnMenuProps) {
   );
   const onDelete = useCallback(() => ev.onDeleteNote?.({ id }), [ev.onDeleteNote]);
 
-  const items = [
+  const items: Menu[] = [
     { key: 'delete', label: 'Delete', onClick: onDelete },
     pinned // Toggle "Pin note"
       ? { key: 'pin', label: 'Unpin note', onClick: onUnpin }
       : { key: 'pin', label: 'Pin note', onClick: onPin },
   ];
 
-  return (
-    <ContextMenu.Root>
-      <ContextMenu.Trigger asChild>{children}</ContextMenu.Trigger>
-      <ContextMenu.Portal>
-        <ContextMenu.Content>
-          {items.map(({ key, label, onClick }) => (
-            <ContextMenu.Item key={key} onClick={onClick}>
-              {label}
-            </ContextMenu.Item>
-          ))}
-        </ContextMenu.Content>
-      </ContextMenu.Portal>
-    </ContextMenu.Root>
-  );
+  return <ContextMenu items={items}>{children}</ContextMenu>;
 }
 
 function useSort(notes: Note[]) {

@@ -2,9 +2,10 @@
 import { Fragment, useCallback } from 'react';
 import { FiFolder } from 'react-icons/fi';
 
-import * as ContextMenu from '@/lib/components/context-menu';
+import ContextMenu from '@/components/context-menu';
 import { useAppState } from '@/context';
 import { useMenu } from '@/hooks';
+import type { Menu } from '@/types';
 
 import { useEvents } from '.';
 import * as Base from './side-view/nav';
@@ -73,17 +74,11 @@ function AuthorOnlyBtnMenu({ children, id }: AuthorOnlyBtnMenuProps) {
     [id, ev.onCreateNote],
   );
 
-  return (
-    <ContextMenu.Root>
-      <ContextMenu.Trigger asChild>{children}</ContextMenu.Trigger>
-      <ContextMenu.Portal>
-        <ContextMenu.Content>
-          <ContextMenu.Item onClick={onRenameFolder}>Rename</ContextMenu.Item>
-          <ContextMenu.Item onClick={onDeleteFolder}>Delete</ContextMenu.Item>
-          <ContextMenu.Separator />
-          <ContextMenu.Item onClick={onCreateNote}>Create note</ContextMenu.Item>
-        </ContextMenu.Content>
-      </ContextMenu.Portal>
-    </ContextMenu.Root>
-  );
+  const items: Menu[] = [
+    { key: 'rename_folder', label: 'Rename', onClick: onRenameFolder },
+    { key: 'delete_folder', label: 'Delete', onClick: onDeleteFolder },
+    { key: 'create_note_inside', label: 'Create note', onClick: onCreateNote },
+  ];
+
+  return <ContextMenu items={items}>{children}</ContextMenu>;
 }
