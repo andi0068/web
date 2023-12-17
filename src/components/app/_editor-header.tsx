@@ -1,10 +1,10 @@
 'use client';
-import { useCallback } from 'react';
 import { FiSidebar } from 'react-icons/fi';
 
 import AiOptions from '@/lib/components/icons/options';
 import DropdownMenu from '@/components/dropdown-menu';
 import { useAppState } from '@/context';
+import { useMenuFactory } from '@/hooks';
 import type { Menu } from '@/types';
 
 import { useEvents } from '.';
@@ -45,19 +45,24 @@ function RightActions() {
 function MoreOptionsDropdownMenu({ children }: { children: React.ReactElement }) {
   const state = useAppState();
   const ev = useEvents();
-
-  const onDelete = useCallback(
-    () => ev.onDeleteNote?.({ id: state.notes.selected!.id }),
-    [state.notes.selected, ev.onDeleteNote],
+  const factory = useMenuFactory(
+    {
+      onLogin: ev.onLogin,
+      onLogout: ev.onLogout,
+      onDeleteNote() {
+        ev.onDeleteNote?.({ id: state.notes.selected!.id });
+      },
+    },
+    [state.notes.selected, ev.onLogin, ev.onLogout, ev.onDeleteNote],
   );
 
   const items: Menu[] = state.auth.user
     ? [
-        { key: 'delete', label: 'Delete', disabled: !state.notes.selected, onClick: onDelete },
+        { ...factory.author.delete_note, disabled: !state.notes.selected },
         'separator',
-        { key: 'auth', label: 'Log out', onClick: ev.onLogout },
+        factory.general.logout,
       ]
-    : [{ key: 'auth', label: 'Login', onClick: ev.onLogin }];
+    : [factory.general.login];
 
   return (
     <DropdownMenu align="end" items={items}>

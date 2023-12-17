@@ -1,11 +1,11 @@
 'use client';
-import { useMemo, useCallback } from 'react';
+import { useMemo } from 'react';
 
-import * as ContextMenu from '@/lib/components/context-menu';
+import ContextMenu from '@/components/context-menu';
 import { useAppState } from '@/context';
-import { useMenu, useGet } from '@/hooks';
+import { useMenu, useGet, useMenuFactory } from '@/hooks';
 import { sortDesc, sortByPinned } from '@/utils/list-utils';
-import type { Note } from '@/types';
+import type { Menu, Note } from '@/types';
 
 import { useEvents } from '.';
 import * as Base from './list-view/list';
@@ -65,35 +65,27 @@ export default function List() {
 
 function AuthorOnlyBtnMenu({ children, id, pinned }: AuthorOnlyBtnMenuProps) {
   const ev = useEvents();
-
-  const onPin = useCallback(() => ev.onUpdateNote?.({ id }, { pinned: true }), [ev.onUpdateNote]);
-  const onUnpin = useCallback(
-    () => ev.onUpdateNote?.({ id }, { pinned: false }),
-    [ev.onUpdateNote],
+  const factory = useMenuFactory(
+    {
+      onPinNote() {
+        ev.onUpdateNote?.({ id }, { pinned: true });
+      },
+      onUnpinNote() {
+        ev.onUpdateNote?.({ id }, { pinned: false });
+      },
+      onDeleteNote() {
+        ev.onDeleteNote?.({ id });
+      },
+    },
+    [id, ev.onUpdateNote, ev.onDeleteNote],
   );
-  const onDelete = useCallback(() => ev.onDeleteNote?.({ id }), [ev.onDeleteNote]);
 
-  const items = [
-    { key: 'delete', label: 'Delete', onClick: onDelete },
-    pinned // Toggle "Pin note"
-      ? { key: 'pin', label: 'Unpin note', onClick: onUnpin }
-      : { key: 'pin', label: 'Pin note', onClick: onPin },
+  const items: Menu[] = [
+    factory.author.delete_note,
+    factory.author[pinned ? 'unpin_note' : 'pin_note'], // Toggle "Pin note"
   ];
 
-  return (
-    <ContextMenu.Root>
-      <ContextMenu.Trigger asChild>{children}</ContextMenu.Trigger>
-      <ContextMenu.Portal>
-        <ContextMenu.Content>
-          {items.map(({ key, label, onClick }) => (
-            <ContextMenu.Item key={key} onClick={onClick}>
-              {label}
-            </ContextMenu.Item>
-          ))}
-        </ContextMenu.Content>
-      </ContextMenu.Portal>
-    </ContextMenu.Root>
-  );
+  return <ContextMenu items={items}>{children}</ContextMenu>;
 }
 
 function useSort(notes: Note[]) {
