@@ -1,6 +1,6 @@
 'use client';
 import { Fragment, useMemo } from 'react';
-import { FiFolder } from 'react-icons/fi';
+import { FiPlus, FiFolder } from 'react-icons/fi';
 
 import ContextMenu from '@/components/context-menu';
 import { useAppState } from '@/context';
@@ -9,6 +9,7 @@ import type { Menu } from '@/types';
 
 import { useEvents } from '.';
 import * as Base from './side-view/nav';
+import * as Actions from './view/header/actions';
 
 interface AuthorOnlyBtnMenuProps {
   children: React.ReactElement;
@@ -17,6 +18,7 @@ interface AuthorOnlyBtnMenuProps {
 
 /**
  * Features
+ * - Create a new folder (author only)
  * - Select and Active state
  * - Context Menu
  *    - Rename folder (author only)
@@ -27,14 +29,33 @@ export default function Nav() {
   return (
     <Base.Root>
       <Base.Section.Root>
-        <Base.Section.Header.Root>
-          <Base.Section.Header.Heading>Folders</Base.Section.Header.Heading>
-        </Base.Section.Header.Root>
+        <Header />
         <Base.Section.List.Container>
           <List />
         </Base.Section.List.Container>
       </Base.Section.Root>
     </Base.Root>
+  );
+}
+
+function Header() {
+  const state = useAppState();
+  return (
+    <Base.Section.Header.Root>
+      <Base.Section.Header.Heading>Folders</Base.Section.Header.Heading>
+      {state.auth.user && <AuthorOnlyActions />}
+    </Base.Section.Header.Root>
+  );
+}
+
+function AuthorOnlyActions() {
+  const ev = useEvents();
+  return (
+    <Actions.Provider size="lg">
+      <Actions.Root>
+        <Actions.Action label="Create a new folder" icon={FiPlus} onClick={ev.onCreateFolder} />
+      </Actions.Root>
+    </Actions.Provider>
   );
 }
 
