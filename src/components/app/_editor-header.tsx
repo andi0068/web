@@ -48,24 +48,18 @@ function MoreOptionsDropdownMenu({ children }: { children: React.ReactElement })
   const ev = useEvents();
   const factory = useMenuFactory(
     {
-      onLogin: ev.onLogin,
-      onLogout: ev.onLogout,
       onDeleteNote() {
         ev.onDeleteNote?.({ id: state.notes.selected!.id });
       },
     },
-    [state.notes.selected, ev.onLogin, ev.onLogout, ev.onDeleteNote],
+    [state.notes.selected, ev.onDeleteNote],
   );
 
   const items = useMemo((): Menu[] => {
     if (state.auth.user) {
-      return [
-        { ...factory.author.delete_note, disabled: !state.notes.selected },
-        'separator',
-        factory.general.logout,
-      ];
+      return [{ ...factory.author.delete_note, disabled: !state.notes.selected }];
     }
-    return [factory.general.login];
+    return [{ key: 'no_content', label: 'No content', disabled: true }];
   }, [state.auth.user, state.notes.selected, factory]);
 
   return (
