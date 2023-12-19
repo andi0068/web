@@ -17,7 +17,9 @@ export function Root({ children, className }: BaseProps) {
         height: 'calc(2.5rem + 4px)',
       }}
     >
-      <div className={cn(`${BEM_CLASS}__inner grow flex items-end`, 'min-w-0 h-5')}>{children}</div>
+      <div className={cn(`${BEM_CLASS}__inner grow flex items-end justify-between`, 'min-w-0 h-5')}>
+        {children}
+      </div>
     </div>
   );
 }

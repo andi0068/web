@@ -1,34 +1,49 @@
 'use client';
-import { FiFolderPlus } from 'react-icons/fi';
+import { useMemo } from 'react';
+import { FiChevronDown } from 'react-icons/fi';
 
+import DropdownMenu from '@/components/dropdown-menu';
 import { useAppState } from '@/context';
+import { useMenuFactory } from '@/hooks';
+import type { Menu } from '@/types';
 
 import { useEvents } from '.';
 import * as Base from './view/header';
 
-/**
- * Features
- * - Create a new folder (author only)
- */
 export default function NavHeader() {
-  const state = useAppState();
   return (
     <Base.Root>
       <Base.Heading as="h1">Collections</Base.Heading>
-      {state.auth.user && <AuthorOnlyActions />}
+      <Base.Actions.Root>
+        <OptionsDropdownMenu>
+          <Base.Actions.Action label="Options" icon={FiChevronDown} />
+        </OptionsDropdownMenu>
+      </Base.Actions.Root>
     </Base.Root>
   );
 }
 
-function AuthorOnlyActions() {
+function OptionsDropdownMenu({ children }: { children: React.ReactElement }) {
+  const state = useAppState();
   const ev = useEvents();
+  const factory = useMenuFactory(
+    {
+      onLogin: ev.onLogin,
+      onLogout: ev.onLogout,
+    },
+    [ev.onLogin, ev.onLogout],
+  );
+
+  const items = useMemo((): Menu[] => {
+    if (state.auth.user) {
+      return [factory.general.logout];
+    }
+    return [factory.general.login];
+  }, [state.auth.user, factory]);
+
   return (
-    <Base.Actions.Root>
-      <Base.Actions.Action
-        label="Create a new folder"
-        icon={FiFolderPlus}
-        onClick={ev.onCreateFolder}
-      />
-    </Base.Actions.Root>
+    <DropdownMenu align="center" items={items}>
+      {children}
+    </DropdownMenu>
   );
 }
