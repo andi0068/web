@@ -9,7 +9,7 @@ export function Root({ children, className }: BaseProps) {
     <div
       className={cn(
         `${BEM_CLASS} sticky top-0 z-10 flex items-center`,
-        'bg-background-primary',
+        'bg-background-secondary',
         'px-[.625rem]',
         className,
       )}

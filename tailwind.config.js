@@ -29,7 +29,7 @@ module.exports = {
           quaternary: 'hsla(240, 33%, 94%, .18)',
         },
         background: {
-          primary: 'hsl(0, 0%, 0%)',
+          primary: 'hsl(0, 0%, 6%)',
           secondary: 'hsl(240, 3%, 11%)',
           tertiary: 'hsl(240, 2%, 18%)',
         },
