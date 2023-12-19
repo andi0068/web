@@ -20,6 +20,11 @@ export function MenuFactory({
   onDeleteNote,
 }: MenuFactoryProps) {
   const general = {
+    no_content: {
+      key: 'no_content',
+      label: 'No content',
+      disabled: true,
+    },
     login: {
       key: 'login',
       label: 'Login',

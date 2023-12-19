@@ -59,7 +59,7 @@ function MoreOptionsDropdownMenu({ children }: { children: React.ReactElement })
     if (state.auth.user) {
       return [{ ...factory.author.delete_note, disabled: !state.notes.selected }];
     }
-    return [{ key: 'no_content', label: 'No content', disabled: true }];
+    return [factory.general.no_content];
   }, [state.auth.user, state.notes.selected, factory]);
 
   return (
