@@ -5,6 +5,7 @@ import { FiChevronDown } from 'react-icons/fi';
 import DropdownMenu from '@/components/dropdown-menu';
 import { useAppState } from '@/context';
 import { useMenuFactory } from '@/hooks';
+import { siteConfig } from '@/config/site';
 import type { Menu } from '@/types';
 
 import { useEvents } from '.';
@@ -13,7 +14,7 @@ import * as Base from './view/header';
 export default function NavHeader() {
   return (
     <Base.Root>
-      <Base.Heading as="h1">Collections</Base.Heading>
+      <Base.Heading as="h1">{siteConfig.name}</Base.Heading>
       <Base.Actions.Root>
         <OptionsDropdownMenu>
           <Base.Actions.Action label="Options" icon={FiChevronDown} />
