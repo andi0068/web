@@ -10,4 +10,5 @@ export interface RowProps<T = HTMLButtonElement> extends BaseProps {
   onClick?: React.MouseEventHandler<T>;
   icon?: React.ElementType;
   active?: boolean;
+  count?: number;
 }

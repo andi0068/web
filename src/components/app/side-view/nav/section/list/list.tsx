@@ -30,7 +30,7 @@ export function Root({ children, className, isEmpty, emptyText }: ListProps) {
 }
 
 export const Row = forwardRef<RowProps, 'button'>(
-  ({ children, className, icon, active, ...rest }, ref) => (
+  ({ children, className, icon, active, count, ...rest }, ref) => (
     <Button
       ref={ref}
       role="menuitem"
@@ -38,10 +38,10 @@ export const Row = forwardRef<RowProps, 'button'>(
       size="none"
       className={cn(
         // Reset starts
-        'justify-start transition-none before:transition-none',
+        'transition-none before:transition-none',
         // Reset ends
-        `${BEM_CLASS}__button group rounded-md`,
-        'text-foreground-secondary hover:text-foreground-primary',
+        `${BEM_CLASS}__button group justify-between`,
+        'rounded-md text-foreground-secondary hover:text-foreground-primary',
         'aria-[current]:text-foreground-primary aria-[current]:bg-fill-quaternary',
         'px-[.625rem] w-full h-10',
         className,
@@ -49,11 +49,16 @@ export const Row = forwardRef<RowProps, 'button'>(
       aria-current={ariaAttr(active)}
       {...rest}
     >
-      <Icon
-        as={icon}
-        className={cn('text-accent group-hover:scale-105 group-active:scale-100', 'mr-3 text-xl')}
-      />
-      <span className="truncate">{children}</span>
+      <span className="inline-flex items-center min-w-0">
+        <Icon
+          as={icon}
+          className={cn('text-accent group-hover:scale-105 group-active:scale-100', 'mr-3 text-xl')}
+        />
+        <span className="truncate">{children}</span>
+      </span>
+      {count !== undefined && (
+        <span className={cn('text-foreground-tertiary', 'ml-2 mr-1 text-sm')}>{count}</span>
+      )}
     </Button>
   ),
 );

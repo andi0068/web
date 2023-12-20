@@ -70,6 +70,7 @@ function List() {
           <Base.Section.List.Row
             icon={FiFolder}
             active={menu.isSelected(folder.id)}
+            count={Object.keys(folder.notes ?? {}).length}
             onClick={menu.onSelect(folder.id)}
           >
             {folder.name}
