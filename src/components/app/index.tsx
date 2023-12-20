@@ -17,7 +17,6 @@ import * as ListView from './list-view';
 import * as EditorView from './editor-view';
 import * as Loader from './loader';
 
-import Nav from './_nav';
 import NavHeader from './_nav-header';
 import ListHeader from './_list-header';
 import EditorHeader from './_editor-header';
@@ -51,6 +50,7 @@ interface ProviderProps extends Handlers {
   children?: React.ReactNode;
 }
 
+const Nav = dynamic(() => import('./_nav'), { ssr: false });
 const List = dynamic(() => import('./_list'), { ssr: false });
 const Editor = dynamic(() => import('./_editor'), { ssr: false });
 
