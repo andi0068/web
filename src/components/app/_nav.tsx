@@ -107,6 +107,7 @@ function AuthorOnlyBtnMenu({ children, id }: AuthorOnlyBtnMenuProps) {
     (): Menu[] => [
       factory.author.rename_folder,
       factory.author.delete_folder,
+      'separator',
       factory.author.create_note_inside,
     ],
     [factory],
