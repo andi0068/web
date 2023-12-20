@@ -58,12 +58,14 @@ export function Content({ children }: BaseProps) {
   return (
     <Base.Content>
       <ViewsContainer>
-        <SideView.Root>
-          <NavHeader />
-          <NavContainer>
-            <Nav />
-          </NavContainer>
-        </SideView.Root>
+        <SideViewContainer>
+          <SideView.Root>
+            <NavHeader />
+            <NavContainer>
+              <Nav />
+            </NavContainer>
+          </SideView.Root>
+        </SideViewContainer>
         <ListView.Root>
           <ListHeader />
           <ListContainer>
@@ -96,6 +98,11 @@ function ViewsContainer({ children }: BaseProps) {
       </Loader.Content>
     </Loader.Root>
   );
+}
+
+function SideViewContainer({ children }: BaseProps) {
+  const { sidebar_collapsed } = useConfig();
+  return <>{sidebar_collapsed ? null : children}</>;
 }
 
 function NavContainer({ children }: BaseProps) {
@@ -134,8 +141,12 @@ function EditorContainer({ children }: BaseProps) {
 // Hooks ******************************************************************************************
 
 export function useConfig() {
-  const { update } = useConfigContext();
+  const {
+    value: { sidebar_collapsed },
+    update,
+  } = useConfigContext();
   return {
+    sidebar_collapsed,
     update,
   } as const;
 }
@@ -200,7 +211,7 @@ function ConfigProvider({ children }: ConfigProviderProps) {
       value: config.value,
       update: config.update,
     }),
-    [],
+    [config.value.sidebar_collapsed],
   );
 
   return <ConfigContext.Provider value={value}>{children}</ConfigContext.Provider>;

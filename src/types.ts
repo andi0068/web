@@ -7,7 +7,9 @@ export type Menu =
     }
   | 'separator';
 
-export type AppClientConfig = {};
+export type AppClientConfig = {
+  sidebar_collapsed?: boolean;
+};
 
 export type Folder = {
   id: string;

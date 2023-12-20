@@ -1,5 +1,5 @@
 'use client';
-import { useMemo } from 'react';
+import { useMemo, useCallback } from 'react';
 import { FiSidebar } from 'react-icons/fi';
 
 import AiOptions from '@/lib/components/icons/options';
@@ -8,11 +8,12 @@ import { useAppState } from '@/context';
 import { useMenuFactory } from '@/hooks';
 import type { Menu } from '@/types';
 
-import { useEvents } from '.';
+import { useConfig, useEvents } from '.';
 import * as Base from './view/header';
 
 /**
  * Features
+ * - Toggle Side Bar
  * - Delete note (author only)
  * - Login and Log out
  */
@@ -26,9 +27,21 @@ export default function EditorHeader() {
 }
 
 function LeftActions() {
+  const config = useConfig();
+
+  const onToggleSidebar = useCallback(
+    () => config.update({ sidebar_collapsed: !config.sidebar_collapsed }),
+    [config.sidebar_collapsed],
+  );
+
   return (
     <Base.Actions.Root>
-      <Base.Actions.Action label="Toggle Side Bar" icon={FiSidebar} disabled aria-hidden />
+      <Base.Actions.Action
+        label="Toggle Side Bar"
+        icon={FiSidebar}
+        onClick={onToggleSidebar}
+        aria-pressed={config.sidebar_collapsed}
+      />
     </Base.Actions.Root>
   );
 }
