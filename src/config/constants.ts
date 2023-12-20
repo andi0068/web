@@ -3,3 +3,5 @@ export const REDIRECT_PATHS = {
   auth: '/login',
   user: '/dashboard',
 };
+
+export const APP_CLIENT_CONFIG_KEY = 'app:client-config';

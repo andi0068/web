@@ -7,6 +7,8 @@ export type Menu =
     }
   | 'separator';
 
+export type AppClientConfig = {};
+
 export type Folder = {
   id: string;
   date: string;

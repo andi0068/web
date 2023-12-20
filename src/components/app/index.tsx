@@ -4,10 +4,12 @@ import { useMemo, useCallback, useContext, createContext } from 'react';
 import { FiFileText } from 'react-icons/fi';
 
 import Spinner from '@/lib/components/spinner';
+import useClientConfig, { type UseClientConfigReturn } from '@/lib/hooks/use-client-config';
 import type * as Folders from '@/services/folders';
 import type * as Notes from '@/services/notes';
 import { useAppState, useAppDispatch } from '@/context';
-import type { Folder } from '@/types';
+import { APP_CLIENT_CONFIG_KEY } from '@/config/constants';
+import type { AppClientConfig, Folder } from '@/types';
 
 import * as Base from './app';
 import * as SideView from './side-view';
@@ -40,6 +42,9 @@ type Handlers = {
 };
 
 interface BaseProps {
+  children?: React.ReactNode;
+}
+interface ConfigProviderProps {
   children?: React.ReactNode;
 }
 interface ProviderProps extends Handlers {
@@ -128,6 +133,13 @@ function EditorContainer({ children }: BaseProps) {
 
 // Hooks ******************************************************************************************
 
+export function useConfig() {
+  const { update } = useConfigContext();
+  return {
+    update,
+  } as const;
+}
+
 export function useEvents() {
   const state = useAppState();
   const dispatch = useAppDispatch();
@@ -170,6 +182,30 @@ export function useEvents() {
 
 // Context ****************************************************************************************
 
+const ConfigContext = createContext<UseClientConfigReturn<AppClientConfig>>({
+  value: {},
+  update() {},
+});
+
+function useConfigContext() {
+  return useContext(ConfigContext);
+}
+
+function ConfigProvider({ children }: ConfigProviderProps) {
+  const config = useClientConfig<AppClientConfig>({
+    key: APP_CLIENT_CONFIG_KEY,
+  });
+  const value = useMemo(
+    (): UseClientConfigReturn<AppClientConfig> => ({
+      value: config.value,
+      update: config.update,
+    }),
+    [],
+  );
+
+  return <ConfigContext.Provider value={value}>{children}</ConfigContext.Provider>;
+}
+
 const HandlersContext = createContext<Handlers>({});
 
 function useHandlersContext() {
@@ -209,7 +245,11 @@ export function Provider({
       onLogout,
     ],
   );
-  return <HandlersContext.Provider value={value}>{children}</HandlersContext.Provider>;
+  return (
+    <ConfigProvider>
+      <HandlersContext.Provider value={value}>{children}</HandlersContext.Provider>
+    </ConfigProvider>
+  );
 }
 
 export { Root } from './app';
