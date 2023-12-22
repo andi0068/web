@@ -128,20 +128,9 @@ export function useAppDispatch() {
     }));
   }
 
-  function unselect(source: 'folders' | 'notes') {
-    dispatch((state) => ({
-      ...state,
-      [source]: {
-        ...state[source],
-        selected: null,
-      },
-    }));
-  }
-
   return {
     authReady,
     loaded,
     select,
-    unselect,
   } as const;
 }

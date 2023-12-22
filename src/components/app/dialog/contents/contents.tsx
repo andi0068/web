@@ -5,10 +5,9 @@ import * as Base from '@/lib/components/dialog';
 import * as RootForm from '@/lib/components/form';
 import Button from '@/lib/components/button';
 import useAsyncHandler from '@/lib/hooks/use-async-handler';
-import { cn } from '@/lib/utils';
 
 import { useDialogContext } from '../dialog.context';
-import type { FormProps, AlertProps, AboutProps, ButtonMouseEventHandler } from './contents.types';
+import type { FormProps, AlertProps, ButtonMouseEventHandler } from './contents.types';
 
 export const Form = forwardRef<HTMLFormElement, FormProps>(
   ({ children, onSubmit: onSubmitProp, button, ...rest }, ref) => {
@@ -52,39 +51,6 @@ export function Alert({ button }: AlertProps) {
           {button.label}
         </Button>
       </Base.Footer>
-    </Base.Content>
-  );
-}
-
-export function About({ entries }: AboutProps) {
-  const { title } = useDialogContext();
-
-  const body = (
-    <Base.Body>
-      {entries.map(([name, value]) => (
-        <p
-          key={name}
-          className={cn(
-            'grid',
-            'text-sm font-semibold border-b border-separator',
-            'grid-cols-4 gap-x-4 py-3',
-          )}
-        >
-          <span className="col-span-1 text-foreground-secondary">{name}</span>
-          <span className="col-span-3 underline">{value}</span>
-        </p>
-      ))}
-    </Base.Body>
-  );
-
-  return (
-    <Base.Content className="rounded-lg">
-      <Base.Header>
-        <Base.Title>About &ldquo;{title}&rdquo;</Base.Title>
-        <Base.Close />
-      </Base.Header>
-      {body}
-      <Base.Footer />
     </Base.Content>
   );
 }
