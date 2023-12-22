@@ -8,8 +8,9 @@ import { useAppState } from '@/context';
 import { useMenuFactory } from '@/hooks';
 import type { Menu } from '@/types';
 
-import { useConfig, useEvents } from '.';
 import * as Base from './view/header';
+
+import { useConfig, useEvents } from './_hooks';
 
 /**
  * Features

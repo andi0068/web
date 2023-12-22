@@ -1,15 +1,9 @@
 'use client';
 import dynamic from 'next/dynamic';
-import { useMemo, useCallback, useContext, createContext } from 'react';
 import { FiFileText } from 'react-icons/fi';
 
 import Spinner from '@/lib/components/spinner';
-import useClientConfig, { type UseClientConfigReturn } from '@/lib/hooks/use-client-config';
-import type * as Folders from '@/services/folders';
-import type * as Notes from '@/services/notes';
-import { useAppState, useAppDispatch } from '@/context';
-import { APP_CLIENT_CONFIG_KEY } from '@/config/constants';
-import type { AppClientConfig, Folder } from '@/types';
+import { useAppState } from '@/context';
 
 import * as Base from './app';
 import * as SideView from './side-view';
@@ -20,33 +14,9 @@ import * as Loader from './loader';
 import NavHeader from './_nav-header';
 import ListHeader from './_list-header';
 import EditorHeader from './_editor-header';
-
-type CreateFolderHandler = () => Promise<{ id: string }>;
-type RenameFolderHandler = (params: Folder) => void;
-type DeleteFolderHandler = (params: Folders.RemoveParams) => Promise<void>;
-
-type CreateNoteHandler = (params: Notes.CreateParams) => Promise<{ id: string }>;
-type UpdateNoteHandler = (params: Notes.UpdateParams, data: Notes.UpdateData) => Promise<void>;
-type DeleteNoteHandler = (params: Notes.RemoveParams) => Promise<void>;
-
-type Handlers = {
-  onCreateFolder?: CreateFolderHandler;
-  onRenameFolder?: RenameFolderHandler;
-  onDeleteFolder?: DeleteFolderHandler;
-  onCreateNote?: CreateNoteHandler;
-  onUpdateNote?: UpdateNoteHandler;
-  onDeleteNote?: DeleteNoteHandler;
-  onLogin?(): void;
-  onLogout?(): Promise<void>;
-};
+import { useConfig } from './_hooks';
 
 interface BaseProps {
-  children?: React.ReactNode;
-}
-interface ConfigProviderProps {
-  children?: React.ReactNode;
-}
-interface ProviderProps extends Handlers {
   children?: React.ReactNode;
 }
 
@@ -138,129 +108,5 @@ function EditorContainer({ children }: BaseProps) {
   );
 }
 
-// Hooks ******************************************************************************************
-
-export function useConfig() {
-  const {
-    value: { sidebar_collapsed },
-    update,
-  } = useConfigContext();
-  return {
-    sidebar_collapsed,
-    update,
-  } as const;
-}
-
-export function useEvents() {
-  const state = useAppState();
-  const dispatch = useAppDispatch();
-  const handlers = useHandlersContext();
-
-  const onRenameFolder = useCallback(
-    (params: { id: string }) => {
-      const folder = state.folders.raw[params.id];
-      if (folder) {
-        handlers.onRenameFolder?.(folder);
-      }
-    },
-    [state.folders.raw, handlers.onRenameFolder],
-  );
-
-  const onCreateNote = useCallback(
-    async (params: Notes.CreateParams) => {
-      if (handlers.onCreateNote) {
-        const { id } = await handlers.onCreateNote(params);
-        dispatch.select('notes', id);
-      }
-    },
-    [handlers.onCreateNote],
-  );
-
-  const { onCreateFolder, onDeleteFolder, onUpdateNote, onDeleteNote, onLogin, onLogout } =
-    handlers;
-
-  return {
-    onCreateFolder,
-    onRenameFolder,
-    onDeleteFolder,
-    onCreateNote,
-    onUpdateNote,
-    onDeleteNote,
-    onLogin,
-    onLogout,
-  } as const;
-}
-
-// Context ****************************************************************************************
-
-const ConfigContext = createContext<UseClientConfigReturn<AppClientConfig>>({
-  value: {},
-  update() {},
-});
-
-function useConfigContext() {
-  return useContext(ConfigContext);
-}
-
-function ConfigProvider({ children }: ConfigProviderProps) {
-  const config = useClientConfig<AppClientConfig>({
-    key: APP_CLIENT_CONFIG_KEY,
-  });
-  const value = useMemo(
-    (): UseClientConfigReturn<AppClientConfig> => ({
-      value: config.value,
-      update: config.update,
-    }),
-    [config.value.sidebar_collapsed],
-  );
-
-  return <ConfigContext.Provider value={value}>{children}</ConfigContext.Provider>;
-}
-
-const HandlersContext = createContext<Handlers>({});
-
-function useHandlersContext() {
-  return useContext(HandlersContext);
-}
-
-export function Provider({
-  children,
-  onCreateFolder,
-  onRenameFolder,
-  onDeleteFolder,
-  onCreateNote,
-  onUpdateNote,
-  onDeleteNote,
-  onLogin,
-  onLogout,
-}: ProviderProps) {
-  const value = useMemo(
-    () => ({
-      onCreateFolder,
-      onRenameFolder,
-      onDeleteFolder,
-      onCreateNote,
-      onUpdateNote,
-      onDeleteNote,
-      onLogin,
-      onLogout,
-    }),
-    [
-      onCreateFolder,
-      onRenameFolder,
-      onDeleteFolder,
-      onCreateNote,
-      onUpdateNote,
-      onDeleteNote,
-      onLogin,
-      onLogout,
-    ],
-  );
-  return (
-    <ConfigProvider>
-      <HandlersContext.Provider value={value}>{children}</HandlersContext.Provider>
-    </ConfigProvider>
-  );
-}
-
 export { Root } from './app';
+export { Provider } from './_context';

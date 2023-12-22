@@ -4,8 +4,9 @@ import { FiFilePlus } from 'react-icons/fi';
 
 import { useAppState } from '@/context';
 
-import { useEvents } from '.';
 import * as Base from './view/header';
+
+import { useEvents } from './_hooks';
 
 /**
  * Features

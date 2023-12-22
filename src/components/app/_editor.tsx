@@ -3,8 +3,9 @@ import { useCallback } from 'react';
 
 import { useAppState } from '@/context';
 
-import { useEvents } from '.';
 import * as Base from './editor-view/editor';
+
+import { useEvents } from './_hooks';
 
 /**
  * Features

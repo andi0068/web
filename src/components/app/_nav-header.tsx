@@ -8,8 +8,9 @@ import { useMenuFactory } from '@/hooks';
 import { siteConfig } from '@/config/site';
 import type { Menu } from '@/types';
 
-import { useEvents } from '.';
 import * as Base from './view/header';
+
+import { useEvents } from './_hooks';
 
 export default function NavHeader() {
   return (

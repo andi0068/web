@@ -7,8 +7,9 @@ import { useMenu, useGet, useMenuFactory } from '@/hooks';
 import { sortDesc, sortByPinned } from '@/utils/list-utils';
 import type { Menu, Note } from '@/types';
 
-import { useEvents } from '.';
 import * as Base from './list-view/list';
+
+import { useEvents } from './_hooks';
 
 interface AuthorOnlyBtnMenuProps {
   children: React.ReactElement;

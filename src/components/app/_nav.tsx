@@ -7,9 +7,10 @@ import { useAppState } from '@/context';
 import { useMenu, useMenuFactory } from '@/hooks';
 import type { Menu } from '@/types';
 
-import { useEvents } from '.';
 import * as Base from './side-view/nav';
 import * as Actions from './view/header/actions';
+
+import { useEvents } from './_hooks';
 
 interface AuthorOnlyBtnMenuProps {
   children: React.ReactElement;
