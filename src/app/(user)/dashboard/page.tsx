@@ -13,15 +13,24 @@ import * as Notes from '@/services/notes';
 import type { Folder } from '@/types';
 
 export default function Dashboard() {
+  const {
+    onCreateFolder,
+    onRenameFolder,
+    onDeleteFolder,
+    onCreateNote,
+    onUpdateNote,
+    onDeleteNote,
+    onLogout,
+  } = useEvents();
   return (
     <App.Provider
-      onCreateFolder={Folders.create}
-      onRenameFolder={useRenameFolderHandler()}
-      onDeleteFolder={useDeleteFolderHandler()}
-      onCreateNote={Notes.create}
-      onUpdateNote={Notes.update}
-      onDeleteNote={useDeleteNoteHandler()}
-      onLogout={Auth.signOut}
+      onCreateFolder={onCreateFolder}
+      onRenameFolder={onRenameFolder}
+      onDeleteFolder={onDeleteFolder}
+      onCreateNote={onCreateNote}
+      onUpdateNote={onUpdateNote}
+      onDeleteNote={onDeleteNote}
+      onLogout={onLogout}
     >
       <App.Root>
         <App.Content>
@@ -44,10 +53,11 @@ function RenameFolderFormField({ name }: { name: string }) {
   );
 }
 
-function useRenameFolderHandler() {
+function useEvents() {
   const dialog = Dialog.useDialogContext();
+  const toast = Toast.useToast();
 
-  return useCallback((params: Folder) => {
+  const onRenameFolder = useCallback((params: Folder) => {
     dialog.open({
       title: 'Rename',
       content: createElement(Dialog.Contents.Form, {
@@ -60,13 +70,8 @@ function useRenameFolderHandler() {
       }),
     });
   }, []);
-}
 
-function useDeleteFolderHandler() {
-  const dialog = Dialog.useDialogContext();
-  const toast = Toast.useToast();
-
-  return useCallback(async (params: { id: string }) => {
+  const onDeleteFolder = useCallback(async (params: { id: string }) => {
     dialog.open({
       title: 'Do you really want to delete this folder and all notes inside?',
       content: createElement(Dialog.Contents.Alert, {
@@ -80,13 +85,8 @@ function useDeleteFolderHandler() {
       }),
     });
   }, []);
-}
 
-function useDeleteNoteHandler() {
-  const dialog = Dialog.useDialogContext();
-  const toast = Toast.useToast();
-
-  return useCallback(async (params: { id: string }) => {
+  const onDeleteNote = useCallback(async (params: { id: string }) => {
     dialog.open({
       title: 'Do you really want to delete this note?',
       content: createElement(Dialog.Contents.Alert, {
@@ -100,4 +100,14 @@ function useDeleteNoteHandler() {
       }),
     });
   }, []);
+
+  return {
+    onCreateFolder: Folders.create,
+    onRenameFolder,
+    onDeleteFolder,
+    onCreateNote: Notes.create,
+    onUpdateNote: Notes.update,
+    onDeleteNote,
+    onLogout: Auth.signOut,
+  } as const;
 }
