@@ -1,10 +1,11 @@
 'use client';
 import React, { Fragment, useMemo } from 'react';
-import { FiPlus, FiFolder } from 'react-icons/fi';
+import { FiPlus, FiFolder, FiFileText } from 'react-icons/fi';
 
 import ContextMenu from '@/components/context-menu';
 import { useAppState } from '@/context';
 import { useMenu, useMenuFactory } from '@/hooks';
+import { sortDesc } from '@/utils/list-utils';
 import type { Menu } from '@/types';
 
 import * as Base from './side-view/nav';
@@ -24,6 +25,9 @@ interface FolderAuthorCtxMenuProps {
 
 /**
  * Features
+ * - "Recents" Section
+ *   - Select and Active state
+ *   - Sorted items
  * - "Folders" Section
  *   - Select and Active state
  *   - Create a new folder (author only)
@@ -35,6 +39,9 @@ interface FolderAuthorCtxMenuProps {
 export default function Nav() {
   return (
     <Base.Root>
+      <Section name="Recents">
+        <RecentsList />
+      </Section>
       <Section name="Folders" action={<FoldersAction />}>
         <FoldersList />
       </Section>
@@ -43,6 +50,28 @@ export default function Nav() {
 }
 
 // Sections ***************************************************************************************
+
+function RecentsList() {
+  const state = useAppState();
+  const list = useRecents(state.notes.data);
+  const menu = useMenu('notes');
+
+  return (
+    <Base.Section.List.Root>
+      {list.map((note) => (
+        <Base.Section.List.Row
+          key={note.id}
+          icon={FiFileText}
+          active={menu.isSelected(note.id)}
+          activeBg="accent"
+          onClick={menu.onSelect(note.id)}
+        >
+          {note.title}
+        </Base.Section.List.Row>
+      ))}
+    </Base.Section.List.Root>
+  );
+}
 
 function FoldersAction() {
   const state = useAppState();
@@ -135,4 +164,10 @@ function Section({ children, name, action }: SectionProps) {
       <Base.Section.List.Container>{children}</Base.Section.List.Container>
     </Base.Section.Root>
   );
+}
+
+// Hooks ******************************************************************************************
+
+function useRecents<T extends { date: string }>(items: T[], max = 3) {
+  return useMemo(() => sortDesc(items).slice(0, max), [items, max]);
 }
