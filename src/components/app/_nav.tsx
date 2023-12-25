@@ -132,7 +132,7 @@ function Section({ children, name, action }: SectionProps) {
           </Actions.Provider>
         )}
       </Base.Section.Header.Root>
-      {children}
+      <Base.Section.List.Container>{children}</Base.Section.List.Container>
     </Base.Section.Root>
   );
 }
