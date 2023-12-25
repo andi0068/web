@@ -1,6 +1,6 @@
 'use client';
 import { useMemo } from 'react';
-import { FiChevronDown } from 'react-icons/fi';
+import { FiMenu } from 'react-icons/fi';
 
 import DropdownMenu from '@/components/dropdown-menu';
 import { useAppState } from '@/context';
@@ -18,7 +18,7 @@ export default function NavHeader() {
       <Base.Heading as="h1">{siteConfig.name}</Base.Heading>
       <Base.Actions.Root>
         <OptionsDropdownMenu>
-          <Base.Actions.Action label="Options" icon={FiChevronDown} />
+          <Base.Actions.Action label="Options" icon={FiMenu} />
         </OptionsDropdownMenu>
       </Base.Actions.Root>
     </Base.Root>

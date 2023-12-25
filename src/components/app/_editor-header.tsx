@@ -1,8 +1,7 @@
 'use client';
 import { useMemo, useCallback } from 'react';
-import { FiSidebar } from 'react-icons/fi';
+import { FiSidebar, FiMoreVertical } from 'react-icons/fi';
 
-import AiOptions from '@/lib/components/icons/options';
 import DropdownMenu from '@/components/dropdown-menu';
 import { useAppState } from '@/context';
 import { useMenuFactory } from '@/hooks';
@@ -51,7 +50,7 @@ function RightActions() {
   return (
     <Base.Actions.Root>
       <MoreOptionsDropdownMenu>
-        <Base.Actions.Action label="More options" icon={AiOptions} />
+        <Base.Actions.Action label="More options" icon={FiMoreVertical} />
       </MoreOptionsDropdownMenu>
     </Base.Actions.Root>
   );

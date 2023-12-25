@@ -1,6 +1,6 @@
 'use client';
 import { useCallback } from 'react';
-import { FiFilePlus } from 'react-icons/fi';
+import { FiPlus } from 'react-icons/fi';
 
 import { useAppState } from '@/context';
 
@@ -38,7 +38,7 @@ function AuthorOnlyActions() {
     <Base.Actions.Root>
       <Base.Actions.Action
         label="Create a new note"
-        icon={FiFilePlus}
+        icon={FiPlus}
         disabled={!state.folders.selected}
         onClick={onCreate}
       />
