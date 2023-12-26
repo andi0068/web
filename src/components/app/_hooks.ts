@@ -8,11 +8,13 @@ import { useConfigContext, useHandlersContext } from './_context';
 
 export function useConfig() {
   const {
-    value: { sidebar_collapsed },
+    value: { sidebar_collapsed, sidebar_recents_collapsed, sidebar_folders_collapsed },
     update,
   } = useConfigContext();
   return {
     sidebar_collapsed,
+    sidebar_recents_collapsed,
+    sidebar_folders_collapsed,
     update,
   } as const;
 }

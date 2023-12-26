@@ -9,6 +9,8 @@ export type Menu =
 
 export type AppClientConfig = {
   sidebar_collapsed?: boolean;
+  sidebar_recents_collapsed?: boolean;
+  sidebar_folders_collapsed?: boolean;
 };
 
 export type Folder = {
