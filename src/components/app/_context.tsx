@@ -29,7 +29,11 @@ function ConfigProvider({ children }: ConfigProviderProps) {
 
   const value = useMemo(
     (): UseClientConfigReturn<AppClientConfig> => ({ ...config }),
-    [config.value.sidebar_collapsed],
+    [
+      config.value.sidebar_collapsed,
+      config.value.sidebar_recents_collapsed,
+      config.value.sidebar_folders_collapsed,
+    ],
   );
 
   return <ConfigContext.Provider value={value}>{children}</ConfigContext.Provider>;

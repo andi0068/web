@@ -6,13 +6,32 @@ import { useAppState, useAppDispatch } from '@/context';
 
 import { useConfigContext, useHandlersContext } from './_context';
 
+type CollapsibleConfigKey =
+  | 'sidebar_collapsed'
+  | 'sidebar_recents_collapsed'
+  | 'sidebar_folders_collapsed';
+
+export function useCollapsible(key: CollapsibleConfigKey) {
+  const config = useConfig();
+  const value = config[key];
+
+  const onToggle = useCallback(() => config.update({ [key]: !value }), [key, value]);
+
+  return {
+    collapsed: value,
+    onToggle,
+  } as const;
+}
+
 export function useConfig() {
   const {
-    value: { sidebar_collapsed },
+    value: { sidebar_collapsed, sidebar_recents_collapsed, sidebar_folders_collapsed },
     update,
   } = useConfigContext();
   return {
     sidebar_collapsed,
+    sidebar_recents_collapsed,
+    sidebar_folders_collapsed,
     update,
   } as const;
 }
