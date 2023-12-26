@@ -1,10 +1,37 @@
+import { cva } from 'class-variance-authority';
+
 import Button from '@/lib/components/button';
 import Icon from '@/lib/components/icon';
 import forwardRef from '@/lib/forward-ref';
 import { cn, ariaAttr } from '@/lib/utils';
 
-import { BEM_CLASS } from './list.const';
+import { BEM_CLASS, ROW_DEFAULTS } from './list.const';
 import type { BaseProps, ListProps, RowProps } from './list.types';
+
+const getRowClassName = cva(
+  [
+    // Reset starts
+    'transition-none before:transition-none',
+    // Reset ends
+    `${BEM_CLASS}__button group justify-between`,
+    'rounded-md text-foreground-secondary',
+    'px-[.625rem] w-full h-10',
+  ],
+  {
+    variants: {
+      activeBg: {
+        accent: [
+          'hover:text-white before:bg-accent',
+          'aria-[current]:text-white aria-[current]:bg-accent/10',
+        ],
+        gray: [
+          'hover:text-foreground-primary before:bg-current',
+          'aria-[current]:text-foreground-primary aria-[current]:bg-fill-quaternary',
+        ],
+      },
+    },
+  },
+);
 
 export function Container({ children, className }: BaseProps) {
   return <div className={cn(`${BEM_CLASS}-container py-[2px]`, className)}>{children}</div>;
@@ -30,22 +57,16 @@ export function Root({ children, className, isEmpty, emptyText }: ListProps) {
 }
 
 export const Row = forwardRef<RowProps, 'button'>(
-  ({ children, className, icon, active, count, ...rest }, ref) => (
+  (
+    { children, className, icon, active, activeBg = ROW_DEFAULTS.activeBg, count, ...rest },
+    ref,
+  ) => (
     <Button
       ref={ref}
       role="menuitem"
       variant="none"
       size="none"
-      className={cn(
-        // Reset starts
-        'transition-none before:transition-none',
-        // Reset ends
-        `${BEM_CLASS}__button group justify-between`,
-        'rounded-md text-foreground-secondary hover:text-foreground-primary',
-        'aria-[current]:text-foreground-primary aria-[current]:bg-fill-quaternary',
-        'px-[.625rem] w-full h-10',
-        className,
-      )}
+      className={cn(getRowClassName({ activeBg, className }))}
       aria-current={ariaAttr(active)}
       {...rest}
     >
