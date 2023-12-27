@@ -35,7 +35,7 @@ export default function List() {
   }
 
   const items = useGet(SOURCE, state.folders.selected[SOURCE]);
-  const list = useSort(items);
+  const list = useList(items);
   const menu = useMenu(SOURCE);
 
   return (
@@ -92,6 +92,6 @@ function AuthorOnlyBtnMenu({ children, id, pinned }: AuthorOnlyBtnMenuProps) {
   return <ContextMenu items={items}>{children}</ContextMenu>;
 }
 
-function useSort(notes: Note[]) {
+function useList(notes: Note[]) {
   return useMemo(() => sortByPinned(sortDesc(notes)), [notes]);
 }

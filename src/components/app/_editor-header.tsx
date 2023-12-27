@@ -13,38 +13,34 @@ import { useCollapsible, useEvents } from './_hooks';
 
 /**
  * Features
- * - Toggle Side Bar
- * - Delete note (author only)
- * - Login and Log out
+ * - Actions
+ *   - "Toggle Side Bar"
+ *   - "More options" with Dropdown Menu
+ *     - Delete note (author only)
  */
 export default function EditorHeader() {
   return (
     <Base.Root>
-      <LeftActions />
-      <RightActions />
+      <Base.Actions.Root>
+        <ToggleSidebarAction />
+      </Base.Actions.Root>
+
+      <Base.Actions.Root>
+        <MoreOptionsAction />
+      </Base.Actions.Root>
     </Base.Root>
   );
 }
 
-function LeftActions() {
-  return (
-    <Base.Actions.Root>
-      <ToggleSidebarAction />
-    </Base.Actions.Root>
-  );
-}
-
-function RightActions() {
-  return (
-    <Base.Actions.Root>
-      <MoreOptionsDropdownMenu>
-        <Base.Actions.Action label="More options" icon={FiMoreVertical} />
-      </MoreOptionsDropdownMenu>
-    </Base.Actions.Root>
-  );
-}
-
 // Actions ****************************************************************************************
+
+function MoreOptionsAction() {
+  return (
+    <MoreOptionsDropdownMenu>
+      <Base.Actions.Action label="More options" icon={FiMoreVertical} />
+    </MoreOptionsDropdownMenu>
+  );
+}
 
 function ToggleSidebarAction() {
   const { collapsed, onToggle } = useCollapsible('sidebar_collapsed');
