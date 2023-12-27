@@ -1,5 +1,5 @@
 'use client';
-import { useMemo, useCallback } from 'react';
+import { useMemo } from 'react';
 import { FiSidebar, FiMoreVertical } from 'react-icons/fi';
 
 import DropdownMenu from '@/components/dropdown-menu';
@@ -9,7 +9,7 @@ import type { Menu } from '@/types';
 
 import * as Base from './view/header';
 
-import { useConfig, useEvents } from './_hooks';
+import { useCollapsible, useEvents } from './_hooks';
 
 /**
  * Features
@@ -27,21 +27,9 @@ export default function EditorHeader() {
 }
 
 function LeftActions() {
-  const config = useConfig();
-
-  const onToggleSidebar = useCallback(
-    () => config.update({ sidebar_collapsed: !config.sidebar_collapsed }),
-    [config.sidebar_collapsed],
-  );
-
   return (
     <Base.Actions.Root>
-      <Base.Actions.Action
-        label="Toggle Side Bar"
-        icon={FiSidebar}
-        onClick={onToggleSidebar}
-        aria-pressed={config.sidebar_collapsed}
-      />
+      <ToggleSidebarAction />
     </Base.Actions.Root>
   );
 }
@@ -55,6 +43,22 @@ function RightActions() {
     </Base.Actions.Root>
   );
 }
+
+// Actions ****************************************************************************************
+
+function ToggleSidebarAction() {
+  const { collapsed, onToggle } = useCollapsible('sidebar_collapsed');
+  return (
+    <Base.Actions.Action
+      label="Toggle Side Bar"
+      icon={FiSidebar}
+      onClick={onToggle}
+      aria-pressed={collapsed}
+    />
+  );
+}
+
+// Dropdown Menus **********************************************************************************
 
 function MoreOptionsDropdownMenu({ children }: { children: React.ReactElement }) {
   const state = useAppState();
