@@ -14,6 +14,7 @@ import { useEvents } from './_hooks';
 interface AuthorOnlyBtnMenuProps {
   children: React.ReactElement;
   id: string;
+  folder_id: string;
   pinned?: boolean;
 }
 
@@ -24,8 +25,9 @@ const SOURCE = 'notes';
  * - Sorted items
  * - Select and Active state
  * - Context Menu
- *    - Toggle "Pin note" (author only)
  *    - Delete note (author only)
+ *    - Move note (author only)
+ *    - Toggle "Pin note" (author only)
  */
 export default function List() {
   const state = useAppState();
@@ -51,7 +53,7 @@ export default function List() {
         return (
           <Base.Row key={note.id} active={active}>
             {state.auth.user ? (
-              <AuthorOnlyBtnMenu id={note.id} pinned={note.pinned}>
+              <AuthorOnlyBtnMenu id={note.id} folder_id={note.folder_id} pinned={note.pinned}>
                 {button}
               </AuthorOnlyBtnMenu>
             ) : (
@@ -64,10 +66,14 @@ export default function List() {
   );
 }
 
-function AuthorOnlyBtnMenu({ children, id, pinned }: AuthorOnlyBtnMenuProps) {
+function AuthorOnlyBtnMenu({ children, id, folder_id, pinned }: AuthorOnlyBtnMenuProps) {
+  const state = useAppState();
   const ev = useEvents();
   const factory = useMenuFactory(
     {
+      onMoveNote(folder) {
+        ev.onUpdateNote?.({ id }, { folder_id: folder.id });
+      },
       onPinNote() {
         ev.onUpdateNote?.({ id }, { pinned: true });
       },
@@ -84,9 +90,11 @@ function AuthorOnlyBtnMenu({ children, id, pinned }: AuthorOnlyBtnMenuProps) {
   const items = useMemo(
     (): Menu[] => [
       factory.author.delete_note,
+      'separator',
+      factory.author.move_note({ folder_id }, state.folders.data),
       factory.author[pinned ? 'unpin_note' : 'pin_note'], // Toggle "Pin note"
     ],
-    [pinned, factory],
+    [folder_id, pinned, state.folders.data, factory],
   );
 
   return <ContextMenu items={items}>{children}</ContextMenu>;

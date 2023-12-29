@@ -1,9 +1,18 @@
+type Folder = {
+  id: string;
+  name: string;
+};
+type Note = {
+  folder_id: string;
+};
+
 export interface MenuFactoryProps {
   onLogin?(): void;
   onLogout?(): void;
   onRenameFolder?(): void;
   onDeleteFolder?(): void;
   onCreateNote?(): void;
+  onMoveNote?(folder: Folder): void;
   onPinNote?(): void;
   onUnpinNote?(): void;
   onDeleteNote?(): void;
@@ -15,6 +24,7 @@ export function MenuFactory({
   onRenameFolder,
   onDeleteFolder,
   onCreateNote,
+  onMoveNote,
   onPinNote,
   onUnpinNote,
   onDeleteNote,
@@ -55,6 +65,18 @@ export function MenuFactory({
       onClick: onCreateNote,
     },
     // Notes
+    move_note: <N extends Note, F extends Folder>(note: N, folders: F[]) => ({
+      key: 'move_note',
+      label: 'Move to folder',
+      sub: folders.map((folder) => ({
+        key: folder.id,
+        label: folder.name,
+        disabled: note.folder_id === folder.id,
+        onClick() {
+          onMoveNote?.({ id: folder.id, name: folder.name });
+        },
+      })),
+    }),
     pin_note: {
       key: 'pin_note',
       label: 'Pin note',

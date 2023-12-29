@@ -86,6 +86,11 @@ function useEvents() {
     });
   }, []);
 
+  const onUpdateNote = useCallback(async (params: Notes.UpdateParams, data: Notes.UpdateData) => {
+    await Notes.update(params, data);
+    if (data.folder_id) toast('Moved to Folder.');
+  }, []);
+
   const onDeleteNote = useCallback(async (params: { id: string }) => {
     dialog.open({
       title: 'Do you really want to delete this note?',
@@ -106,7 +111,7 @@ function useEvents() {
     onRenameFolder,
     onDeleteFolder,
     onCreateNote: Notes.create,
-    onUpdateNote: Notes.update,
+    onUpdateNote,
     onDeleteNote,
     onLogout: Auth.signOut,
   } as const;
