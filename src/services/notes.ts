@@ -14,6 +14,7 @@ export type UpdateParams = {
   id: string;
 };
 export type UpdateData = {
+  folder_id?: string;
   title?: string;
   content?: string;
   pinned?: boolean;
@@ -56,6 +57,14 @@ export async function create(params: CreateParams) {
 }
 
 export async function update(params: UpdateParams, data: UpdateData) {
+  if (data.folder_id) {
+    const note = await mod.get(REFS.id(params.id)).then((s) => s.val());
+    return mod.update(mod.ref(DB, '/'), {
+      [`/folders/${note.folder_id}/notes/${note.id}`]: null,
+      [`/folders/${data.folder_id}/notes/${note.id}`]: true,
+      [`/notes/${note.id}/folder_id`]: data.folder_id, // FIXME?
+    });
+  }
   return mod.update(REFS.id(params.id), data);
 }
 
