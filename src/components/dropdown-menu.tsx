@@ -1,3 +1,5 @@
+import { Fragment } from 'react';
+
 import {
   Root,
   Trigger,
@@ -5,6 +7,9 @@ import {
   Content,
   Item,
   Separator,
+  Sub,
+  SubTrigger,
+  SubContent,
   type DropdownMenuContentProps,
 } from '@/lib/components/dropdown-menu';
 import type { Menu } from '@/types';
@@ -23,6 +28,23 @@ export default function DropdownMenu({ children, items, ...rest }: DropdownMenuP
           {items.map((el, i) =>
             typeof el === 'string' ? (
               <Separator key={i} />
+            ) : el.sub ? (
+              <Fragment key={el.key}>
+                {el.sub.length ? (
+                  <Sub>
+                    <SubTrigger disabled={el.disabled}>{el.label}</SubTrigger>
+                    <Portal>
+                      <SubContent>
+                        {el.sub.map((subEl) => (
+                          <Item key={subEl.key} disabled={subEl.disabled} onClick={subEl.onClick}>
+                            {subEl.label}
+                          </Item>
+                        ))}
+                      </SubContent>
+                    </Portal>
+                  </Sub>
+                ) : null}
+              </Fragment>
             ) : (
               <Item key={el.key} disabled={el.disabled} onClick={el.onClick}>
                 {el.label}

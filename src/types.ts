@@ -4,8 +4,10 @@ export type Menu =
       label: string;
       disabled?: boolean;
       onClick?(): void | Promise<void>;
+      sub?: SubMenu[];
     }
   | 'separator';
+export type SubMenu = Omit<Exclude<Menu, 'separator'>, 'sub'>;
 
 export type AppClientConfig = {
   sidebar_collapsed?: boolean;
