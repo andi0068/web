@@ -12,18 +12,34 @@ import * as Base from './view/header';
 
 import { useEvents } from './_hooks';
 
+/**
+ * Features
+ * - Actions
+ *   - "Options" with Dropdown Menu
+ *     - Login or Logout
+ */
 export default function NavHeader() {
   return (
     <Base.Root>
       <Base.Heading as="h1">{siteConfig.name}</Base.Heading>
       <Base.Actions.Root>
-        <OptionsDropdownMenu>
-          <Base.Actions.Action label="Options" icon={FiMenu} />
-        </OptionsDropdownMenu>
+        <OptionsAction />
       </Base.Actions.Root>
     </Base.Root>
   );
 }
+
+// Actions ****************************************************************************************
+
+function OptionsAction() {
+  return (
+    <OptionsDropdownMenu>
+      <Base.Actions.Action label="Options" icon={FiMenu} />
+    </OptionsDropdownMenu>
+  );
+}
+
+// Dropdown Menus *********************************************************************************
 
 function OptionsDropdownMenu({ children }: { children: React.ReactElement }) {
   const state = useAppState();

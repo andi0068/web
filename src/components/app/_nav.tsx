@@ -24,7 +24,7 @@ interface SectionProps {
 interface ToggleActionProps {
   name: SectionName;
 }
-interface FolderAuthorCtxMenuProps {
+interface FolderContextMenuProps {
   children: React.ReactElement;
   id: string;
 }
@@ -34,9 +34,13 @@ interface FolderAuthorCtxMenuProps {
  * - "Recents" Section
  *   - Select and Active state
  *   - Sorted items
+ *   - Actions
+ *     - Toggle menu
  * - "Folders" Section
  *   - Select and Active state
- *   - Create a new folder (author only)
+ *   - Actions
+ *     - "Create a new folder" (author only)
+ *     - Toggle menu
  *   - Context Menu (author only)
  *     - Rename folder
  *     - Delete folder
@@ -87,7 +91,7 @@ function RecentsList() {
 
 function FoldersAction() {
   const state = useAppState();
-  return <>{state.auth.user ? <CreateFolderAuthorAction /> : null}</>;
+  return <>{state.auth.user && <CreateFolderAction />}</>;
 }
 
 function FoldersList() {
@@ -106,6 +110,7 @@ function FoldersList() {
           <Base.Section.List.Row
             icon={FiFolder}
             active={active}
+            activeBg="gray"
             count={Object.keys(folder.notes ?? {}).length}
             onClick={menu.onSelect(folder.id)}
           >
@@ -114,11 +119,7 @@ function FoldersList() {
         );
         return (
           <Fragment key={folder.id}>
-            {state.auth.user ? (
-              <FolderAuthorCtxMenu id={folder.id}>{row}</FolderAuthorCtxMenu>
-            ) : (
-              row
-            )}
+            {state.auth.user ? <FolderContextMenu id={folder.id}>{row}</FolderContextMenu> : row}
           </Fragment>
         );
       })}
@@ -128,7 +129,7 @@ function FoldersList() {
 
 // Actions ****************************************************************************************
 
-function CreateFolderAuthorAction() {
+function CreateFolderAction() {
   const ev = useEvents();
   return <Actions.Action label="Create a new folder" icon={FiPlus} onClick={ev.onCreateFolder} />;
 }
@@ -148,7 +149,7 @@ function ToggleAction({ name }: ToggleActionProps) {
 
 // Context Menus **********************************************************************************
 
-function FolderAuthorCtxMenu({ children, id }: FolderAuthorCtxMenuProps) {
+function FolderContextMenu({ children, id }: FolderContextMenuProps) {
   const ev = useEvents();
   const factory = useMenuFactory(
     {

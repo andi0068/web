@@ -10,38 +10,43 @@ import { useEvents } from './_hooks';
 
 /**
  * Features
- * - Create a new note (author only)
+ * - Actions (author only)
+ *   - "Create a new note"
  */
 export default function ListHeader() {
   const state = useAppState();
-  const selected = state.folders.selected;
+
+  const folder = state.folders.selected;
+  const title = folder ? folder.name : 'Notes';
 
   return (
     <Base.Root>
-      <Base.Heading>{selected ? selected.name : 'Notes'}</Base.Heading>
-      {state.auth.user && <AuthorOnlyActions />}
+      <Base.Heading>{title}</Base.Heading>
+      {state.auth.user && (
+        <Base.Actions.Root>
+          <CreateNoteAction folderId={folder?.id} />
+        </Base.Actions.Root>
+      )}
     </Base.Root>
   );
 }
 
-function AuthorOnlyActions() {
-  const state = useAppState();
+// Actions ****************************************************************************************
+
+function CreateNoteAction({ folderId }: { folderId?: string }) {
   const ev = useEvents();
 
-  const onCreate = useCallback(() => {
-    if (state.folders.selected) {
-      ev.onCreateNote?.({ folder_id: state.folders.selected.id });
-    }
-  }, [state.folders.selected, ev.onCreateNote]);
+  const onCreate = useCallback(
+    () => ev.onCreateNote?.({ folder_id: folderId! }),
+    [folderId, ev.onCreateNote],
+  );
 
   return (
-    <Base.Actions.Root>
-      <Base.Actions.Action
-        label="Create a new note"
-        icon={FiPlus}
-        disabled={!state.folders.selected}
-        onClick={onCreate}
-      />
-    </Base.Actions.Root>
+    <Base.Actions.Action
+      label="Create a new note"
+      icon={FiPlus}
+      disabled={!folderId}
+      onClick={onCreate}
+    />
   );
 }

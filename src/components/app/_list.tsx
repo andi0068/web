@@ -11,7 +11,7 @@ import * as Base from './list-view/list';
 
 import { useEvents } from './_hooks';
 
-interface AuthorOnlyBtnMenuProps {
+interface ButtonContextMenuProps {
   children: React.ReactElement;
   id: string;
   folder_id: string;
@@ -24,10 +24,10 @@ const SOURCE = 'notes';
  * Features
  * - Sorted items
  * - Select and Active state
- * - Context Menu
- *    - Delete note (author only)
- *    - Move note (author only)
- *    - Toggle "Pin note" (author only)
+ * - Context Menu (author only)
+ *    - Delete note
+ *    - Move note
+ *    - Toggle "Pin note"
  */
 export default function List() {
   const state = useAppState();
@@ -53,9 +53,9 @@ export default function List() {
         return (
           <Base.Row key={note.id} active={active}>
             {state.auth.user ? (
-              <AuthorOnlyBtnMenu id={note.id} folder_id={note.folder_id} pinned={note.pinned}>
+              <ButtonContextMenu id={note.id} folder_id={note.folder_id} pinned={note.pinned}>
                 {button}
-              </AuthorOnlyBtnMenu>
+              </ButtonContextMenu>
             ) : (
               button
             )}
@@ -66,7 +66,9 @@ export default function List() {
   );
 }
 
-function AuthorOnlyBtnMenu({ children, id, folder_id, pinned }: AuthorOnlyBtnMenuProps) {
+// Context Menus **********************************************************************************
+
+function ButtonContextMenu({ children, id, folder_id, pinned }: ButtonContextMenuProps) {
   const state = useAppState();
   const ev = useEvents();
   const factory = useMenuFactory(
@@ -99,6 +101,8 @@ function AuthorOnlyBtnMenu({ children, id, folder_id, pinned }: AuthorOnlyBtnMen
 
   return <ContextMenu items={items}>{children}</ContextMenu>;
 }
+
+// Hooks ******************************************************************************************
 
 function useList(notes: Note[]) {
   return useMemo(() => sortByPinned(sortDesc(notes)), [notes]);

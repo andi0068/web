@@ -54,7 +54,7 @@ function ToggleSidebarAction() {
   );
 }
 
-// Dropdown Menus **********************************************************************************
+// Dropdown Menus *********************************************************************************
 
 function MoreOptionsDropdownMenu({ children }: { children: React.ReactElement }) {
   const state = useAppState();
