@@ -1,13 +1,12 @@
-export type Menu =
-  | {
-      key: string;
-      label: string;
-      disabled?: boolean;
-      onClick?(): void | Promise<void>;
-      sub?: SubMenu[];
-    }
-  | 'separator';
-export type SubMenu = Omit<Exclude<Menu, 'separator'>, 'sub'>;
+type BaseMenu = {
+  key: string;
+  label: string;
+  disabled?: boolean;
+  onClick?(): void | Promise<void>;
+};
+
+export type Menu = (BaseMenu & { sub?: BaseMenu[] }) | 'separator';
+export type SubMenu = BaseMenu;
 
 export type AppClientConfig = {
   sidebar_collapsed?: boolean;

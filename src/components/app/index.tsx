@@ -109,4 +109,4 @@ function EditorContainer({ children }: BaseProps) {
 }
 
 export { Root } from './app';
-export { Provider } from './_context';
+export { Provider } from './_provider';

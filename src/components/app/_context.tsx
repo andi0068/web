@@ -9,7 +9,7 @@ import type { AppClientConfig, Folder } from '@/types';
 
 // Config *****************************************************************************************
 
-interface ConfigProviderProps {
+export interface ConfigProviderProps {
   children?: React.ReactNode;
 }
 
@@ -22,7 +22,7 @@ export function useConfigContext() {
   return useContext(ConfigContext);
 }
 
-function ConfigProvider({ children }: ConfigProviderProps) {
+export function ConfigProvider({ children }: ConfigProviderProps) {
   const config = useClientConfig<AppClientConfig>({
     key: APP_CLIENT_CONFIG_KEY,
   });
@@ -60,7 +60,7 @@ type Handlers = {
   onDeleteNote?: DeleteNoteHandler;
 };
 
-interface HandlersProviderProps extends Handlers {
+export interface HandlersProviderProps extends Handlers {
   children?: React.ReactNode;
 }
 
@@ -70,7 +70,7 @@ export function useHandlersContext() {
   return useContext(HandlersContext);
 }
 
-function HandlersProvider({
+export function HandlersProvider({
   children,
   onLogin,
   onLogout,
@@ -104,39 +104,4 @@ function HandlersProvider({
     ],
   );
   return <HandlersContext.Provider value={value}>{children}</HandlersContext.Provider>;
-}
-
-// Provider ***************************************************************************************
-
-interface ProviderProps extends HandlersProviderProps {
-  children?: React.ReactNode;
-}
-
-export function Provider({
-  children,
-  onLogin,
-  onLogout,
-  onCreateFolder,
-  onRenameFolder,
-  onDeleteFolder,
-  onCreateNote,
-  onUpdateNote,
-  onDeleteNote,
-}: ProviderProps) {
-  return (
-    <ConfigProvider>
-      <HandlersProvider
-        onLogin={onLogin}
-        onLogout={onLogout}
-        onCreateFolder={onCreateFolder}
-        onRenameFolder={onRenameFolder}
-        onDeleteFolder={onDeleteFolder}
-        onCreateNote={onCreateNote}
-        onUpdateNote={onUpdateNote}
-        onDeleteNote={onDeleteNote}
-      >
-        {children}
-      </HandlersProvider>
-    </ConfigProvider>
-  );
 }
