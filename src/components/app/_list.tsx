@@ -1,5 +1,5 @@
 'use client';
-import { useMemo } from 'react';
+import { useMemo, memo } from 'react';
 
 import ContextMenu from '@/components/context-menu';
 import { useAppState } from '@/context';
@@ -11,6 +11,13 @@ import * as Base from './list-view/list';
 
 import { useEvents } from './_hooks';
 
+type SelectHandler = (id: string) => () => void;
+
+interface RowProps extends Note {
+  active: boolean;
+  enableContextMenu?: boolean;
+  onSelect?: SelectHandler;
+}
 interface ButtonContextMenuProps {
   children: React.ReactElement;
   id: string;
@@ -42,29 +49,48 @@ export default function List() {
 
   return (
     <Base.Root>
-      {list.map((note) => {
-        const active = menu.isSelected(note.id);
-        const button = (
-          <Base.Button.Root active={active} onClick={menu.onSelect(note.id)}>
-            <Base.Button.Title>{note.title}</Base.Button.Title>
-            <Base.Button.Meta date={note.date} content={note.content} pinned={note.pinned} />
-          </Base.Button.Root>
-        );
-        return (
-          <Base.Row key={note.id} active={active}>
-            {state.auth.user ? (
-              <ButtonContextMenu id={note.id} folder_id={note.folder_id} pinned={note.pinned}>
-                {button}
-              </ButtonContextMenu>
-            ) : (
-              button
-            )}
-          </Base.Row>
-        );
-      })}
+      {list.map((note) => (
+        <Row
+          key={note.id}
+          enableContextMenu={state.auth.user}
+          active={menu.isSelected(note.id)}
+          onSelect={menu.onSelect}
+          {...note}
+        />
+      ))}
     </Base.Root>
   );
 }
+
+const Row = memo(function Row({
+  id,
+  folder_id,
+  date,
+  title,
+  content,
+  pinned,
+  enableContextMenu,
+  active,
+  onSelect,
+}: RowProps) {
+  const button = (
+    <Base.Button.Root active={active} onClick={onSelect?.(id)}>
+      <Base.Button.Title>{title}</Base.Button.Title>
+      <Base.Button.Meta date={date} content={content} pinned={pinned} />
+    </Base.Button.Root>
+  );
+  return (
+    <Base.Row key={id} active={active}>
+      {enableContextMenu ? (
+        <ButtonContextMenu id={id} folder_id={folder_id} pinned={pinned}>
+          {button}
+        </ButtonContextMenu>
+      ) : (
+        button
+      )}
+    </Base.Row>
+  );
+});
 
 // Context Menus **********************************************************************************
 
