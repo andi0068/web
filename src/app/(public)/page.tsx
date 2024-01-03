@@ -5,14 +5,18 @@ import { useCallback } from 'react';
 import * as App from '@/components/app';
 
 export default function Home() {
-  const router = useRouter();
-  const onLogin = useCallback(() => router.push('/login'), []);
-
   return (
-    <App.Provider onLogin={onLogin}>
+    <Provider>
       <App.Root>
         <App.Content />
       </App.Root>
-    </App.Provider>
+    </Provider>
   );
+}
+
+function Provider({ children }: { children?: React.ReactNode }) {
+  const router = useRouter();
+  const onLogin = useCallback(() => router.push('/login'), []);
+
+  return <App.Provider onLogin={onLogin}>{children}</App.Provider>;
 }

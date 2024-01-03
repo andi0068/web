@@ -13,6 +13,19 @@ import * as Notes from '@/services/notes';
 import type { Folder } from '@/types';
 
 export default function Dashboard() {
+  return (
+    <Provider>
+      <App.Root>
+        <App.Content>
+          <Dialog.Viewport />
+          <Toast.Viewport />
+        </App.Content>
+      </App.Root>
+    </Provider>
+  );
+}
+
+function Provider({ children }: { children?: React.ReactNode }) {
   const {
     onCreateFolder,
     onRenameFolder,
@@ -32,12 +45,7 @@ export default function Dashboard() {
       onDeleteNote={onDeleteNote}
       onLogout={onLogout}
     >
-      <App.Root>
-        <App.Content>
-          <Dialog.Viewport />
-          <Toast.Viewport />
-        </App.Content>
-      </App.Root>
+      {children}
     </App.Provider>
   );
 }

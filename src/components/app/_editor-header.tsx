@@ -5,6 +5,7 @@ import { FiSidebar, FiMoreVertical } from 'react-icons/fi';
 import DropdownMenu from '@/components/dropdown-menu';
 import { useAppState } from '@/context';
 import { useMenuFactory } from '@/hooks';
+import { isNonNullable } from '@/utils/ts-utils';
 import type { Menu } from '@/types';
 
 import * as Base from './view/header';
@@ -68,12 +69,14 @@ function MoreOptionsDropdownMenu({ children }: { children: React.ReactElement })
     [state.notes.selected, ev.onDeleteNote],
   );
 
+  const isNoteSelected = isNonNullable(state.notes.selected);
+
   const items = useMemo((): Menu[] => {
     if (state.auth.user) {
-      return [{ ...factory.author.delete_note, disabled: !state.notes.selected }];
+      return [{ ...factory.author.delete_note, disabled: !isNoteSelected }];
     }
     return [factory.general.no_content];
-  }, [state.auth.user, state.notes.selected, factory]);
+  }, [state.auth.user, isNoteSelected, factory]);
 
   return (
     <DropdownMenu align="end" items={items}>
