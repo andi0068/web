@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import { Source_Sans_3 } from 'next/font/google';
 
-import { Provider } from '@/context';
+import { Provider } from '@/context/state';
 import { AuthInitiator, FoldersInitiator, NotesInitiator, Redirector } from '@/hooks';
 import { REDIRECT_PATHS } from '@/config/constants';
 import { siteConfig } from '@/config/site';

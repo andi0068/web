@@ -1,10 +1,11 @@
 'use client';
 import { useCallback } from 'react';
 
+import { useAppConfigContext } from '@/context/app-config';
 import type * as Notes from '@/services/notes';
-import { useAppState, useAppDispatch } from '@/context';
+import { useAppState, useAppDispatch } from '@/hooks';
 
-import { useConfigContext, useHandlersContext } from './_context';
+import { useHandlersContext } from './_context';
 
 type CollapsibleConfigKey =
   | 'sidebar_collapsed'
@@ -27,7 +28,7 @@ export function useConfig() {
   const {
     value: { sidebar_collapsed, sidebar_recents_collapsed, sidebar_folders_collapsed },
     update,
-  } = useConfigContext();
+  } = useAppConfigContext();
   return {
     sidebar_collapsed,
     sidebar_recents_collapsed,

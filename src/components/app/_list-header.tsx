@@ -2,7 +2,7 @@
 import { useCallback } from 'react';
 import { FiPlus } from 'react-icons/fi';
 
-import { useAppState } from '@/context';
+import { useAppState } from '@/hooks';
 
 import * as Base from './view/header';
 

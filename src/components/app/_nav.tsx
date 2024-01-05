@@ -4,8 +4,7 @@ import { FiPlus, FiFolder, FiFileText, FiChevronDown } from 'react-icons/fi';
 
 import { ariaAttr } from '@/lib/utils';
 import ContextMenu from '@/components/context-menu';
-import { useAppState } from '@/context';
-import { useMenu, useMenuFactory } from '@/hooks';
+import { useAppState, useMenu, useMenuFactory } from '@/hooks';
 import { sortDesc } from '@/utils/list-utils';
 import type { Menu } from '@/types';
 

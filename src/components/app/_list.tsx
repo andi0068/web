@@ -2,8 +2,7 @@
 import { useMemo, memo } from 'react';
 
 import ContextMenu from '@/components/context-menu';
-import { useAppState } from '@/context';
-import { useMenu, useGet, useMenuFactory } from '@/hooks';
+import { useAppState, useMenu, useGet, useMenuFactory } from '@/hooks';
 import { sortDesc, sortByPinned } from '@/utils/list-utils';
 import type { Menu, Note } from '@/types';
 

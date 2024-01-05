@@ -3,7 +3,7 @@ import dynamic from 'next/dynamic';
 import { FiFileText } from 'react-icons/fi';
 
 import Spinner from '@/lib/components/spinner';
-import { useAppState } from '@/context';
+import { useAppState } from '@/hooks';
 
 import * as Base from './app';
 import * as SideView from './side-view';

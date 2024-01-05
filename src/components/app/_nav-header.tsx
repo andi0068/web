@@ -3,8 +3,7 @@ import { useMemo } from 'react';
 import { FiMenu } from 'react-icons/fi';
 
 import DropdownMenu from '@/components/dropdown-menu';
-import { useAppState } from '@/context';
-import { useMenuFactory } from '@/hooks';
+import { useAppState, useMenuFactory } from '@/hooks';
 import { siteConfig } from '@/config/site';
 import type { Menu } from '@/types';
 

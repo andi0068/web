@@ -1,5 +1,7 @@
 'use client';
-import { ConfigProvider, HandlersProvider, type HandlersProviderProps } from './_context';
+import * as AppConfig from '@/context/app-config';
+
+import { HandlersProvider, type HandlersProviderProps } from './_context';
 
 interface ProviderProps extends HandlersProviderProps {
   children?: React.ReactNode;
@@ -17,7 +19,7 @@ export function Provider({
   onDeleteNote,
 }: ProviderProps) {
   return (
-    <ConfigProvider>
+    <AppConfig.Provider>
       <HandlersProvider
         onLogin={onLogin}
         onLogout={onLogout}
@@ -30,6 +32,6 @@ export function Provider({
       >
         {children}
       </HandlersProvider>
-    </ConfigProvider>
+    </AppConfig.Provider>
   );
 }

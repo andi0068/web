@@ -1,43 +1,9 @@
 'use client';
 import { useMemo, useContext, createContext } from 'react';
 
-import useClientConfig, { type UseClientConfigReturn } from '@/lib/hooks/use-client-config';
 import type * as Folders from '@/services/folders';
 import type * as Notes from '@/services/notes';
-import { APP_CLIENT_CONFIG_KEY } from '@/config/constants';
-import type { AppClientConfig, Folder } from '@/types';
-
-// Config *****************************************************************************************
-
-export interface ConfigProviderProps {
-  children?: React.ReactNode;
-}
-
-const ConfigContext = createContext<UseClientConfigReturn<AppClientConfig>>({
-  value: {},
-  update() {},
-});
-
-export function useConfigContext() {
-  return useContext(ConfigContext);
-}
-
-export function ConfigProvider({ children }: ConfigProviderProps) {
-  const config = useClientConfig<AppClientConfig>({
-    key: APP_CLIENT_CONFIG_KEY,
-  });
-
-  const value = useMemo(
-    (): UseClientConfigReturn<AppClientConfig> => ({ ...config }),
-    [
-      config.value.sidebar_collapsed,
-      config.value.sidebar_recents_collapsed,
-      config.value.sidebar_folders_collapsed,
-    ],
-  );
-
-  return <ConfigContext.Provider value={value}>{children}</ConfigContext.Provider>;
-}
+import type { Folder } from '@/types';
 
 // Handlers ***************************************************************************************
 

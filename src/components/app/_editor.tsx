@@ -1,7 +1,7 @@
 'use client';
 import { useMemo, useCallback, useContext, createContext } from 'react';
 
-import { useAppState } from '@/context';
+import { useAppState } from '@/hooks';
 
 import * as Base from './editor-view/editor';
 

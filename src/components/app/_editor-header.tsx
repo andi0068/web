@@ -3,8 +3,7 @@ import { useMemo } from 'react';
 import { FiSidebar, FiMoreVertical } from 'react-icons/fi';
 
 import DropdownMenu from '@/components/dropdown-menu';
-import { useAppState } from '@/context';
-import { useMenuFactory } from '@/hooks';
+import { useAppState, useMenuFactory } from '@/hooks';
 import { isNonNullable } from '@/utils/ts-utils';
 import type { Menu } from '@/types';
 
