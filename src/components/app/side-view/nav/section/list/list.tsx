@@ -11,7 +11,7 @@ import type { BaseProps, ListProps, RowProps } from './list.types';
 const getRowClassName = cva(
   [
     // Reset starts
-    'transition-none before:transition-none',
+    'transition-none before:transition-none focus:before:opacity-0',
     // Reset ends
     `${BEM_CLASS}__button group justify-between`,
     'rounded-md text-foreground-secondary',
