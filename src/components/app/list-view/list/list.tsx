@@ -22,7 +22,7 @@ export function Row({ children, className, as: As = 'li', active, ...rest }: Row
   return (
     <As
       className={cn(
-        `${BEM_CLASS}__row border-t border-separator transition-colors first-of-type:border-t-0 last-of-type:border-b`,
+        `${BEM_CLASS}__row border-t border-separator first-of-type:border-t-0 last-of-type:border-b`,
         'hover:border-transparent data-[current]:border-transparent [:hover+&]:border-t-transparent [[data-current]+&]:border-t-transparent',
         'mx-5',
         className,

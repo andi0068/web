@@ -20,8 +20,10 @@ export const Root = forwardRef<HTMLButtonElement, ButtonProps>(
         // Reset starts
         'flex flex-col items-start justify-start',
         'whitespace-normal text-left font-normal',
+        'transition-none before:transition-none focus:before:opacity-0',
         // Reset ends
-        `${BEM_CLASS} rounded-lg aria-[current]:bg-fill-tertiary`,
+        `${BEM_CLASS} rounded-lg hover:text-white before:bg-accent`,
+        'aria-[current]:text-white aria-[current]:bg-accent/10',
         'p-5 w-full space-y-[.625rem]',
         className,
       )}

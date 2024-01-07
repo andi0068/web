@@ -2,6 +2,7 @@
 import React, { Fragment, useMemo } from 'react';
 import { FiPlus, FiFolder, FiFileText, FiChevronDown } from 'react-icons/fi';
 
+import AiFolderOpen from '@/lib/components/icons/folder-open';
 import { ariaAttr } from '@/lib/utils';
 import ContextMenu from '@/components/context-menu';
 import { useAppState, useMenu, useMenuFactory } from '@/hooks';
@@ -107,7 +108,7 @@ function FoldersList() {
         }
         const row = (
           <Base.Section.List.Row
-            icon={FiFolder}
+            icon={active ? AiFolderOpen : FiFolder}
             active={active}
             activeBg="gray"
             count={Object.keys(folder.notes ?? {}).length}
