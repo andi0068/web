@@ -7,6 +7,7 @@ import Input from '@/lib/components/input';
 import * as App from '@/components/app';
 import * as Dialog from '@/components/app/dialog';
 import * as Toast from '@/components/app/toast';
+import { useAppState } from '@/hooks';
 import * as Auth from '@/services/auth';
 import * as Folders from '@/services/folders';
 import * as Notes from '@/services/notes';
@@ -62,6 +63,7 @@ function RenameFolderFormField({ name }: { name: string }) {
 }
 
 function useEvents() {
+  const state = useAppState();
   const dialog = Dialog.useDialogContext();
   const toast = Toast.useToast();
 
@@ -94,25 +96,37 @@ function useEvents() {
     });
   }, []);
 
-  const onUpdateNote = useCallback(async (params: Notes.UpdateParams, data: Notes.UpdateData) => {
-    await Notes.update(params, data);
-    if (data.folder_id) toast('Moved to Folder.');
-  }, []);
+  const onUpdateNote = useCallback(
+    async (params: Notes.UpdateParams, data: Notes.UpdateData) => {
+      await Notes.update(params, data);
+      if (data.folder_id) {
+        const folder = state.folders.raw[data.folder_id];
+        toast(`Moved to ${folder.name}.`);
+      }
+    },
+    [state.folders.raw],
+  );
 
-  const onDeleteNote = useCallback(async (params: { id: string }) => {
-    dialog.open({
-      title: 'Do you really want to delete this note?',
-      content: createElement(Dialog.Contents.Alert, {
-        button: {
-          label: 'Delete',
-          async onClick() {
-            await Notes.remove(params);
-            toast('Deleted from Notes.');
+  const onDeleteNote = useCallback(
+    async (params: { id: string }) => {
+      dialog.open({
+        title: 'Do you really want to delete this note?',
+        content: createElement(Dialog.Contents.Alert, {
+          button: {
+            label: 'Delete',
+            async onClick() {
+              const note = await Notes.remove(params);
+              if (note) {
+                const folder = state.folders.raw[note.folder_id];
+                toast(`Deleted from ${folder.name}.`);
+              }
+            },
           },
-        },
-      }),
-    });
-  }, []);
+        }),
+      });
+    },
+    [state.folders.raw],
+  );
 
   return {
     onCreateFolder: Folders.create,
