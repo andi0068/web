@@ -71,9 +71,14 @@ export async function update(params: UpdateParams, data: UpdateData) {
 export async function remove(params: RemoveParams) {
   const note = await mod.get(REFS.id(params.id)).then((s) => s.val());
   if (note) {
-    return mod.update(mod.ref(DB, '/'), {
-      [`/folders/${note.folder_id}/notes/${note.id}`]: null,
-      [`/notes/${note.id}`]: null,
-    });
+    return mod
+      .update(mod.ref(DB, '/'), {
+        [`/folders/${note.folder_id}/notes/${note.id}`]: null,
+        [`/notes/${note.id}`]: null,
+      })
+      .then(() => ({
+        id: note.id,
+        folder_id: note.folder_id,
+      }));
   }
 }
