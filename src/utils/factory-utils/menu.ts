@@ -6,7 +6,7 @@ type Note = {
   folder_id: string;
 };
 
-export interface MenuFactoryProps {
+export interface CreateProps {
   onLogin?(): void;
   onLogout?(): void;
   onRenameFolder?(): void;
@@ -18,7 +18,7 @@ export interface MenuFactoryProps {
   onDeleteNote?(): void;
 }
 
-export function MenuFactory({
+export function Create({
   onLogin,
   onLogout,
   onRenameFolder,
@@ -28,7 +28,7 @@ export function MenuFactory({
   onPinNote,
   onUnpinNote,
   onDeleteNote,
-}: MenuFactoryProps) {
+}: CreateProps) {
   const general = {
     no_content: {
       key: 'no_content',

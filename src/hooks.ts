@@ -7,8 +7,9 @@ import * as Auth from '@/services/auth';
 import * as Folders from '@/services/folders';
 import * as Notes from '@/services/notes';
 import { get } from '@/utils/list-utils';
-import { MenuFactory, type MenuFactoryProps } from '@/utils/factory-utils';
-import type { FoldersRecord, NotesRecord } from '@/types';
+import * as StateFactory from '@/utils/factory-utils/state';
+import * as MenuFactory from '@/utils/factory-utils/menu';
+import type { FoldersRecord, NotesRecord, Folder, Note } from '@/types';
 
 type RedirectPaths = {
   public: string;
@@ -31,10 +32,7 @@ export function useAppDispatch() {
   function authReady(user: boolean) {
     dispatch((state) => ({
       ...state,
-      auth: {
-        ready: true,
-        user,
-      },
+      auth: StateFactory.auth.ready(user),
     }));
   }
 
@@ -44,22 +42,17 @@ export function useAppDispatch() {
   ) {
     dispatch((state) => ({
       ...state,
-      [source]: {
-        ready: true,
-        raw,
-        data: Object.values(raw),
-        selected: state[source].selected ? raw[state[source].selected!.id] : state[source].selected,
-      },
+      [source]: StateFactory.resource.updates<Folder | Note>(
+        state[source].ready ? { raw } : { ready: { raw } },
+        state[source],
+      ),
     }));
   }
 
   function select(source: 'folders' | 'notes', id: string) {
     dispatch((state) => ({
       ...state,
-      [source]: {
-        ...state[source],
-        selected: state[source].raw[id],
-      },
+      [source]: StateFactory.resource.updates<Folder | Note>({ selected: { id } }, state[source]),
     }));
   }
 
@@ -135,8 +128,8 @@ export function useGet(source: 'notes', by?: Record<string, true>) {
   return useMemo(() => get(raw, by), [raw, by]);
 }
 
-export function useMenuFactory(props: MenuFactoryProps, deps: React.DependencyList) {
-  return useMemo(() => MenuFactory(props), deps);
+export function useMenuFactory(props: MenuFactory.CreateProps, deps: React.DependencyList) {
+  return useMemo(() => MenuFactory.Create(props), deps);
 }
 
 export function AuthInitiator() {

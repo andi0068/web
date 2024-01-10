@@ -32,3 +32,21 @@ export type Note = {
 
 export type FoldersRecord = Record<string, Folder>;
 export type NotesRecord = Record<string, Note>;
+
+export type AuthState = {
+  readonly ready: boolean;
+  readonly user: boolean;
+};
+
+export type ResourceState<T extends { id: string }> = {
+  readonly ready: boolean;
+  readonly raw: Record<string, T>;
+  readonly data: T[];
+  readonly selected?: T | null;
+};
+
+export type State = {
+  readonly auth: AuthState;
+  readonly folders: ResourceState<Folder>;
+  readonly notes: ResourceState<Note>;
+};
