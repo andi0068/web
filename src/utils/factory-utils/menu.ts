@@ -16,6 +16,7 @@ export interface CreateProps {
   onPinNote?(): void;
   onUnpinNote?(): void;
   onDeleteNote?(): void;
+  onCloseNote?(): void;
 }
 
 export function Create({
@@ -28,6 +29,7 @@ export function Create({
   onPinNote,
   onUnpinNote,
   onDeleteNote,
+  onCloseNote,
 }: CreateProps) {
   const general = {
     no_content: {
@@ -44,6 +46,11 @@ export function Create({
       key: 'logout',
       label: 'Log out',
       onClick: onLogout,
+    },
+    close_note: {
+      key: 'close_note',
+      label: 'Close',
+      onClick: onCloseNote,
     },
   };
 

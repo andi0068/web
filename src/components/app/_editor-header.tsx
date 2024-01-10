@@ -3,7 +3,7 @@ import { useMemo } from 'react';
 import { FiSidebar, FiMoreVertical } from 'react-icons/fi';
 
 import DropdownMenu from '@/components/dropdown-menu';
-import { useAppState, useMenuFactory } from '@/hooks';
+import { useAppState, useAppDispatch, useMenuFactory } from '@/hooks';
 import { isNonNullable } from '@/utils/ts-utils';
 import type { Menu } from '@/types';
 
@@ -17,6 +17,7 @@ import { useCollapsible, useEvents } from './_hooks';
  *   - "Toggle Side Bar"
  *   - "More options" with Dropdown Menu
  *     - Delete note (author only)
+ *     - Close note
  */
 export default function EditorHeader() {
   return (
@@ -58,11 +59,15 @@ function ToggleSidebarAction() {
 
 function MoreOptionsDropdownMenu({ children }: { children: React.ReactElement }) {
   const state = useAppState();
+  const dispatch = useAppDispatch();
   const ev = useEvents();
   const factory = useMenuFactory(
     {
       onDeleteNote() {
         ev.onDeleteNote?.({ id: state.notes.selected!.id });
+      },
+      onCloseNote() {
+        dispatch.unselect('notes');
       },
     },
     [state.notes.selected, ev.onDeleteNote],
@@ -72,9 +77,12 @@ function MoreOptionsDropdownMenu({ children }: { children: React.ReactElement })
 
   const items = useMemo((): Menu[] => {
     if (state.auth.user) {
-      return [{ ...factory.author.delete_note, disabled: !isNoteSelected }];
+      return [
+        { ...factory.author.delete_note, disabled: !isNoteSelected },
+        ...(isNoteSelected ? ['separator' as const, factory.general.close_note] : []),
+      ];
     }
-    return [factory.general.no_content];
+    return [isNoteSelected ? factory.general.close_note : factory.general.no_content];
   }, [state.auth.user, isNoteSelected, factory]);
 
   return (
