@@ -56,10 +56,18 @@ export function useAppDispatch() {
     }));
   }
 
+  function unselect(source: 'folders' | 'notes') {
+    dispatch((state) => ({
+      ...state,
+      [source]: StateFactory.resource.updates<Folder | Note>({ selected: null }, state[source]),
+    }));
+  }
+
   return {
     authReady,
     loaded,
     select,
+    unselect,
   } as const;
 }
 
