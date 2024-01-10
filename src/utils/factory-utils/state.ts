@@ -3,7 +3,7 @@ import type { AuthState, ResourceState } from '@/types';
 interface ResourceUpdatesPayloads<T extends { id: string }> {
   ready?: { raw: Record<string, T> };
   raw?: Record<string, T>;
-  selected?: { id: string };
+  selected?: { id: string } | null;
 }
 
 export const auth = {
@@ -68,6 +68,12 @@ export const resource = {
       return {
         ...state,
         selected: state.raw[id],
+      };
+    }
+    if (payloads.selected === null) {
+      return {
+        ...state,
+        selected: null,
       };
     }
 
