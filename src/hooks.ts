@@ -2,6 +2,7 @@
 import { useRouter, usePathname } from 'next/navigation';
 import { Fragment, useEffect, useMemo, useCallback, createElement } from 'react';
 
+import { useStateConfigContext } from '@/context/state-config';
 import { useStateContext } from '@/context/state';
 import * as Auth from '@/services/auth';
 import * as Folders from '@/services/folders';
@@ -27,6 +28,7 @@ export function useAppState() {
 }
 
 export function useAppDispatch() {
+  const config = useStateConfigContext();
   const { dispatch } = useStateContext();
 
   function authReady(user: boolean) {
@@ -40,10 +42,20 @@ export function useAppDispatch() {
     source: Source,
     raw: { folders: FoldersRecord; notes: NotesRecord }[Source],
   ) {
+    const conf = {
+      selected_id: config.value[`${source}_selected_id`],
+    };
     dispatch((state) => ({
       ...state,
       [source]: StateFactory.resource.updates<Folder | Note>(
-        state[source].ready ? { raw } : { ready: { raw } },
+        state[source].ready
+          ? { raw }
+          : {
+              ready: {
+                raw,
+                selected: conf.selected_id ? { id: conf.selected_id } : undefined,
+              },
+            },
         state[source],
       ),
     }));
@@ -54,6 +66,7 @@ export function useAppDispatch() {
       ...state,
       [source]: StateFactory.resource.updates<Folder | Note>({ selected: { id } }, state[source]),
     }));
+    config.update({ [`${source}_selected_id`]: id });
   }
 
   function unselect(source: 'folders' | 'notes') {
@@ -61,6 +74,7 @@ export function useAppDispatch() {
       ...state,
       [source]: StateFactory.resource.updates<Folder | Note>({ selected: null }, state[source]),
     }));
+    config.update({ [`${source}_selected_id`]: undefined });
   }
 
   return {

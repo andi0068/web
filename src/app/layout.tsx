@@ -1,7 +1,8 @@
 import type { Metadata } from 'next';
 import { Source_Sans_3 } from 'next/font/google';
 
-import { Provider } from '@/context/state';
+import * as StateConfig from '@/context/state-config';
+import * as State from '@/context/state';
 import { AuthInitiator, FoldersInitiator, NotesInitiator, Redirector } from '@/hooks';
 import { REDIRECT_PATHS } from '@/config/constants';
 import { siteConfig } from '@/config/site';
@@ -25,13 +26,15 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en">
       <body className={sans.className}>
-        <Provider>
-          {children}
-          <AuthInitiator />
-          <FoldersInitiator />
-          <NotesInitiator />
-          <Redirector paths={REDIRECT_PATHS} />
-        </Provider>
+        <StateConfig.Provider>
+          <State.Provider>
+            {children}
+            <AuthInitiator />
+            <FoldersInitiator />
+            <NotesInitiator />
+            <Redirector paths={REDIRECT_PATHS} />
+          </State.Provider>
+        </StateConfig.Provider>
       </body>
     </html>
   );

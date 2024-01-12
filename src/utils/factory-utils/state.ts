@@ -1,7 +1,10 @@
 import type { AuthState, ResourceState } from '@/types';
 
 interface ResourceUpdatesPayloads<T extends { id: string }> {
-  ready?: { raw: Record<string, T> };
+  ready?: {
+    raw: Record<string, T>;
+    selected?: { id: string };
+  };
   raw?: Record<string, T>;
   selected?: { id: string } | null;
 }
@@ -46,12 +49,12 @@ export const resource = {
     state: ResourceState<T>,
   ): ResourceState<T> {
     if (payloads.ready) {
-      const { raw } = payloads.ready;
+      const { raw, selected } = payloads.ready;
       return {
-        ...state,
         ready: true,
         raw,
         data: Object.values(raw),
+        selected: selected ? raw[selected.id] : null,
       };
     }
     if (payloads.raw) {
