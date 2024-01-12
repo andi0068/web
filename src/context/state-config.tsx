@@ -23,7 +23,10 @@ export function Provider({ children }: ProviderProps) {
     key: STATE_CLIENT_CONFIG_KEY,
   });
 
-  const value = useMemo(() => ({ ...config }), []);
+  const value = useMemo(
+    () => ({ ...config }),
+    [config.value.folders_selected_id, config.value.notes_selected_id],
+  );
 
   return <Context.Provider value={value}>{children}</Context.Provider>;
 }

@@ -8,7 +8,10 @@ type BaseMenu = {
 export type Menu = (BaseMenu & { sub?: BaseMenu[] }) | 'separator';
 export type SubMenu = BaseMenu;
 
-export type StateClientConfig = {};
+export type StateClientConfig = {
+  folders_selected_id?: string;
+  notes_selected_id?: string;
+};
 export type AppClientConfig = {
   sidebar_collapsed?: boolean;
   sidebar_recents_collapsed?: boolean;
